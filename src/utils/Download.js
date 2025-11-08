@@ -103,7 +103,7 @@ class Download {
         // Get lyrics
         if (this.getLyrics && this.details.isTrack) {
             this.log('Getting lyrics...');
-            this.lyrics = await getLyrics(this.details.id).catch(err => this.log('Failed to get lyrics (does it have any?)', 'warn')); // TODO: maybe don't log or change to debug?
+            this.lyrics = await getLyrics(this.details.id).catch(err => { }); // TODO: maybe don't log or change to debug?
         }
 
         // Download cover
