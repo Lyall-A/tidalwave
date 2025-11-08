@@ -414,6 +414,7 @@ async function authorize() {
             secrets.refreshToken = token.refresh_token || secrets.refreshToken;
             secrets.scope = token.scope;
             secrets.countryCode = token.user?.countryCode;
+            secrets.userId = token.user_id;
         }).catch(err => {
             logger.error(`Failed to refresh token: ${err?.error_description || 'No error description'} [${err?.sub_status || 'No error code'}]`);
         });
@@ -434,6 +435,7 @@ async function authorize() {
             secrets.clientSecret = config.clientSecret;
             secrets.scope = token.scope;
             secrets.countryCode = token.user?.countryCode;
+            secrets.userId = token.user_id;
         }).catch(err => {
             throw new Error(`Failed to get access token: ${err?.error_description || 'No error description'} [${err?.sub_status || 'No error code'}]`);
         });

@@ -64,8 +64,10 @@ class Download {
 
     async getSegments() {
         this.log('Getting segment URL\'s...');
-        this.playbackInfo = await getPlaybackInfo(this.details.id, this.details.type, this.details.isVideo ? 'HIGH' : this.trackQuality);
+        this.playbackInfo = await getPlaybackInfo(this.details.id, this.details.type, this.details.isVideo ? 'HIGH' : this.trackQuality, 'STREAM', 'FULL');
         this.manifest = await parseManifest(Buffer.from(this.playbackInfo.manifest, 'base64').toString(), this.playbackInfo.manifestMimeType);
+
+        if (this.playbackInfo.assetPresentation === 'PREVIEW') this.log('Downloading preview, make sure you have a valid subscription!', 'warn');
         
         if (this.details.isTrack) {
             this.segmentUrls = this.manifest.segments;
