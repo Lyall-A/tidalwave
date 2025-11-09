@@ -1,4 +1,5 @@
 const stripMarkup = require('./stripMarkup');
+const parseCredits = require('./parseCredits');
 
 const { config, tidalAlbumCoverSizes } = require('../globals');
 
@@ -26,7 +27,8 @@ function parseAlbum(album, additional = { }) {
         quality: album.audioQuality,
         modes: album.audioModes,
         qualityTypes: album.mediaMetadata?.tags,
-        credits: additional?.credits?.items,
+        credits: additional?.credits?.items ? parseCredits(additional.credits.items) : null,
+        trackCredits: additional?.trackCredits ? additional.trackCredits.map(i => ({ track: i.item, credits: parseCredits(i.credits) })) : null,
         review: additional?.review?.text ? {
             originalText: additional.review.text,
             text: stripMarkup(additional.review.text),

@@ -46,7 +46,7 @@ Coming eventually
 
 `allowUserUploads` can be set to allow/block user uploaded tracks
 
-`artistSeperator` can be set to null to use only main artist
+`tagSeperator` the seperator used when adding multiple values to the same metadata tag (eg. artists)
 
 `coverFilename` can be set to null to delete jpg after embedding
 

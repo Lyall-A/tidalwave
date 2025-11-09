@@ -10,6 +10,7 @@ const embedMetadata = require('./embedMetadata');
 const extractContainer = require('./extractContainer');
 const getLyrics = require('./getLyrics');
 const formatString = require('./formatString');
+const normalizeTag = require('./normalizeTag');
 
 class Download {
     playbackInfo;
@@ -38,7 +39,7 @@ class Download {
         this.syncedLyricsOnly = options.syncedLyricsOnly ?? false;
         this.plainLyricsOnly = options.plainLyricsOnly ?? false;
         this.useArtistsTag = options.useArtistsTag ?? true;
-        this.artistSeperator = options.artistSeperator;
+        this.tagSeperator = options.tagSeperator;
         this.customMetadata = options.customMetadata;
         this.keepContainerFile = options.keepContainerFile ?? false;
         this.segmentWaitMin = options.segmentWaitMin ?? 0;
@@ -120,13 +121,17 @@ class Download {
             this.log('Cover already downladed');
         }
 
+        const albumCredits = this.details.album.credits;
+        const trackCredits = this.details.album.trackCredits.find(({ track }) => track.id === this.details.id)?.credits;
+
+        // TODO: add more credit tags
         this.metadata = [
             ['title', this.details.title],
-            ['artist', (this.useArtistsTag || !this.artistSeperator) ? this.details.artist?.name : this.details.artists?.map(i => i.name).join(this.artistSeperator)],
-            ['artists', this.useArtistsTag ? this.artistSeperator ? this.details.artists?.map(i => i.name).join(this.artistSeperator) : this.details.artist?.name : null],
+            ['artist', normalizeTag(this.details.artists?.map(i => i.name), !this.useArtistsTag ? this.tagSeperator : null)],
+            ['artists', this.useArtistsTag ? normalizeTag(this.details.artists?.map(i => i.name), this.tagSeperator) : null],
             ['album', this.details.album?.title],
-            ['albumartist', (this.useArtistsTag || !this.artistSeperator) ? this.details.albumArtist?.name : this.details.albumArtists?.map(i => i.name).join(this.artistSeperator)],
-            ['albumartists', this.useArtistsTag ? this.artistSeperator ? this.details.albumArtists?.map(i => i.name).join(this.artistSeperator) : this.details.albumArtist?.name : null],
+            ['albumartist', normalizeTag(this.details.albumArtists?.map(i => i.name), !this.useArtistsTag ? this.tagSeperator : null)],
+            ['albumartists', this.useArtistsTag ? normalizeTag(this.details.albumArtists?.map(i => i.name), this.tagSeperator) : null],
             ['date', this.details.releaseDate],
             ['originalyear', this.details.releaseYear],
             ['tracktotal', this.details.album?.trackCount],
@@ -137,6 +142,28 @@ class Download {
             ['replaygain_album_peak', this.playbackInfo.albumPeakAmplitude],
             ['replaygain_track_gain', this.playbackInfo.trackReplayGain || this.details.track?.replayGain], // NOTE: details.track.replayGain is actually playbackInfo.albumReplayGain
             ['replaygain_track_peak', this.playbackInfo.trackPeakAmplitude || this.details.track?.peak],
+            ['producer', normalizeTag(trackCredits?.producer?.map(i => i.name))],
+            ['composer', normalizeTag(trackCredits?.composer?.map(i => i.name))],
+            ['engineer', normalizeTag(trackCredits?.engineer?.map(i => i.name))],
+            ['mastering_engineer', normalizeTag(trackCredits?.masteringEngineer?.map(i => i.name))],
+            ['mixing_engineer', normalizeTag(trackCredits?.mixingEngineer?.map(i => i.name))],
+            ['additional_engineer', normalizeTag(trackCredits?.additionalEngineer?.map(i => i.name))],
+            ['assistant_engineer', normalizeTag(trackCredits?.assistantEngineer?.map(i => i.name))],
+            ['recording_engineer', normalizeTag(trackCredits?.recordingEngineer?.map(i => i.name))],
+            ['publisher', normalizeTag(trackCredits?.publisher?.map(i => i.name))],
+            ['remixer', normalizeTag(trackCredits?.remixer?.map(i => i.name))],
+            ['mixer', normalizeTag(trackCredits?.mixer?.map(i => i.name))],
+            ['lyricist', normalizeTag(trackCredits?.lyricist?.map(i => i.name))],
+            ['guitar', normalizeTag(trackCredits?.guitar?.map(i => i.name))],
+            ['banjo', normalizeTag(trackCredits?.banjo?.map(i => i.name))],
+            ['keyboard', normalizeTag(trackCredits?.keyboard?.map(i => i.name))],
+            ['drums', normalizeTag(trackCredits?.drums?.map(i => i.name))],
+            ['piano', normalizeTag(trackCredits?.piano?.map(i => i.name))],
+            ['bass', normalizeTag(trackCredits?.bass?.map(i => i.name))],
+            ['whistle', normalizeTag(trackCredits?.whistle?.map(i => i.name))],
+            ['horn', normalizeTag(trackCredits?.horn?.map(i => i.name))],
+            ['strings', normalizeTag(trackCredits?.strings?.map(i => i.name))],
+            ['label', normalizeTag(albumCredits?.label?.map(i => i.name))],
             ['copyright', this.details.track?.copyright],
             ['barcode', this.details.album?.upc],
             ['isrc', this.details.track?.isrc],

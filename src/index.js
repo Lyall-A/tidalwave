@@ -192,7 +192,7 @@ if (options.help || [
             syncedLyricsOnly: config.syncedLyricsOnly,
             plainLyricsOnly: config.plainLyricsOnly,
             useArtistsTag: config.useArtistsTag,
-            artistSeperator: config.artistSeperator,
+            tagSeperator: config.tagSeperator,
             customMetadata: config.customMetadata,
             keepContainerFile: config.debug ? true : false,
             segmentWaitMin: config.segmentWaitMin,

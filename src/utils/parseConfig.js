@@ -4,7 +4,7 @@ const defaultConfig = require('../default.config.json');
 
 function parseConfig(configPath) {
     const jsonConfig = JSON.parse(fs.readFileSync(configPath));
-    const version = jsonConfig._version;
+    let version = jsonConfig._version;
 
     const config = {
         ...defaultConfig,
@@ -33,17 +33,21 @@ function parseConfig(configPath) {
             delete config.quality;
         }
         
-        config._version = 1;
+        version = 1;
     }
 
-    /*
     if (version === 1) {
-        // stuff
-        config._version = 2;
-    }
-    */
+        if (config.artistSeperator !== undefined) {
+            config.tagSeperator = config.artistSeperator;
+            delete config.artistSeperator;
+        }
 
-    if (config._version !== version) fs.writeFileSync(configPath, JSON.stringify(config, null, 4));
+        version = 2;
+    }
+
+    config._version = version;
+
+    if (version !== jsonConfig._version) fs.writeFileSync(configPath, JSON.stringify(config, null, 4));
 
     return config;
 }
