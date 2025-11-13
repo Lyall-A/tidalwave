@@ -20,6 +20,8 @@ function parseTrack(track) {
         replayGain: track.replayGain,
         peak: track.peak,
         bpm: track.bpm,
+        key: track.key,
+        keyScale: track.keyScale,
         url: track.url,
         artists: track.artists?.map(parseArtist),
         album: track.album && parseAlbum(track.album) || undefined
