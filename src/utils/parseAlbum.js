@@ -1,11 +1,11 @@
 const stripMarkup = require('./stripMarkup');
-const parseCredits = require('./parseCredits');
 
 const { config, tidalAlbumCoverSizes } = require('../globals');
 
 function parseAlbum(album, additional = { }) {
     const parseTrack = require('./parseTrack');
     const parseArtist = require('./parseArtist');
+    const parseCredits = require('./parseCredits');
 
     return {
         id: album.id,

@@ -65,5 +65,65 @@ module.exports = {
     },
     tidalPlaylistImageSizes: {
         'original': 'origin'
-    }
+    },
+    tidalCredits: [
+        // NOTE: found from searching various albums and tracks, theres definitely more
+
+        // Found in both track and album credits
+        { type: 'Producer' },
+        { type: 'Assistant Engineer' },
+        { type: 'Engineer' },
+
+        // Track credits
+        { type: 'Executive Producer' },
+        { type: 'Composer' },
+        { type: 'Mastering Engineer' },
+        { type: 'Mixing Engineer' },
+        { type: 'Additional Engineer' },
+        { type: 'Recording Engineer' },
+        { type: 'Associated Performer' },
+        { type: 'Assistant Producer' },
+        { type: 'Assistant Recording Engineer' },
+        { type: 'Assistant Mixing Engineer' },
+        { type: 'Featured Artist' },
+        { type: 'Remixer', },
+        { type: 'Drum Kit' },
+        { type: 'Synthesizer' },
+        { type: 'Mixer' },
+        { type: 'Lyricist' },
+        { type: 'Background Vocal' },
+        { type: 'Talkbox' },
+        { type: 'Vocoder' },
+        { type: 'Vocal' },
+        { type: 'Guitar' },
+        { type: 'Bass' },
+        { type: 'Piano' },
+        { type: 'Drums' },
+        { type: 'Horn' },
+        { type: 'Strings' },
+        { type: 'Whistles' },
+        { type: 'Keyboards' },
+        { type: 'Banjo' },
+
+        // Album credits
+        { type: 'Primary Artist' },
+        { type: 'Arranger' },
+        { type: 'Mixing' },
+        { type: 'Mixing Assistant' },
+        { type: 'Mastering' },
+        { type: 'Music Publisher', tagName: 'publisher' },
+        { type: 'Record Label', tagName: 'label' },
+        { type: 'Layout', tagName: null },
+        { type: 'Artwork', tagName: null },
+        { type: 'Package Design', tagName: null },
+        { type: 'Art Direction', tagName: null },
+        { type: 'Design', tagName: null },
+        { type: 'Vocals', tagName: null },
+        { type: 'Graphic Design', tagName: null },
+        { type: 'Photography', tagName: null },
+    ].map(credit => {
+        // Fill blank tagName
+        if (credit.tagName === undefined) credit.tagName = credit.type.toLowerCase().replace(/\s/g, '_');
+        return credit;
+    })
 }
