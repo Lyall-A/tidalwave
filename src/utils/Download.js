@@ -122,6 +122,9 @@ class Download {
         }
 
         // Metadata
+        const album = this.details.album;
+        const track = this.details.track;
+
         const albumCredits = this.details.album.credits;
         const trackCredits = this.details.album.trackCredits.find(({ track }) => track.id === this.details.id)?.credits;
 
@@ -132,25 +135,26 @@ class Download {
             ['title', this.details.title],
             ['artist', normalizeTag(this.details.artists?.map(i => i.name), !this.useArtistsTag ? this.tagSeperator : null)],
             ['artists', this.useArtistsTag ? normalizeTag(this.details.artists?.map(i => i.name), this.tagSeperator) : null],
-            ['album', this.details.album?.title],
+            ['album', album?.title],
             ['albumartist', normalizeTag(this.details.albumArtists?.map(i => i.name), !this.useArtistsTag ? this.tagSeperator : null)],
             ['albumartists', this.useArtistsTag ? normalizeTag(this.details.albumArtists?.map(i => i.name), this.tagSeperator) : null],
             ['date', this.details.releaseDate],
             ['originalyear', this.details.releaseYear],
-            ['tracktotal', this.details.album?.trackCount],
-            ['tracknumber', this.details.track?.trackNumber],
-            ['disctotal', this.details.album?.volumeCount],
-            ['discnumber', this.details.track?.volumeNumber],
+            ['tracktotal', album?.trackCount],
+            ['tracknumber', track?.trackNumber],
+            ['disctotal', album?.volumeCount],
+            ['discnumber', track?.volumeNumber],
             ['replaygain_album_gain', this.playbackInfo.albumReplayGain],
             ['replaygain_album_peak', this.playbackInfo.albumPeakAmplitude],
-            ['replaygain_track_gain', this.playbackInfo.trackReplayGain || this.details.track?.replayGain], // NOTE: details.track.replayGain is actually playbackInfo.albumReplayGain
-            ['replaygain_track_peak', this.playbackInfo.trackPeakAmplitude || this.details.track?.peak],
+            ['replaygain_track_gain', this.playbackInfo.trackReplayGain || track?.replayGain], // NOTE: details.track.replayGain is actually playbackInfo.albumReplayGain
+            ['replaygain_track_peak', this.playbackInfo.trackPeakAmplitude || track?.peak],
             ['producer', normalizeTag(trackCredits?.producer?.map(i => i.name))], // TODO
-            ['copyright', this.details.track?.copyright],
-            ['barcode', this.details.album?.upc],
-            ['isrc', this.details.track?.isrc],
+            ['copyright', track?.copyright],
+            ['barcode', album?.upc],
+            ['isrc', track?.isrc],
             ['itunesadvisory', this.details.explicit === true ? '1' : this.details.explicit === false ? '2' : null],
-            ['bpm', this.details.track?.bpm],
+            ['bpm', track?.bpm],
+            ['initialkey', [track?.key?.toUpperCase(), track?.keyScale ? `${track.keyScale.charAt(0).toUpperCase()}${track.keyScale.substring(1).toLowerCase()}` : null].filter(i => i).join(' ') || null],
             ['lyrics',
                 this.syncedLyricsOnly ? this.lyrics?.syncedLyrics :
                 this.plainLyricsOnly ? this.lyrics?.plainLyrics :
