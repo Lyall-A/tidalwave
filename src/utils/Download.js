@@ -148,7 +148,6 @@ class Download {
             ['replaygain_album_peak', this.playbackInfo.albumPeakAmplitude],
             ['replaygain_track_gain', this.playbackInfo.trackReplayGain || track?.replayGain], // NOTE: details.track.replayGain is actually playbackInfo.albumReplayGain
             ['replaygain_track_peak', this.playbackInfo.trackPeakAmplitude || track?.peak],
-            ['producer', normalizeTag(trackCredits?.producer?.map(i => i.name))], // TODO
             ['copyright', track?.copyright],
             ['barcode', album?.upc],
             ['isrc', track?.isrc],
