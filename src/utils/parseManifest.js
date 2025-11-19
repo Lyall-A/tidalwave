@@ -5,7 +5,7 @@ async function parseManifest(manifest, manifestType) {
             mimeType: null,
             segmentAlignment: null,
             codecs: null,
-            bandwith: null,
+            bandwidth: null,
             audioSamplingRate: null,
             timescale: null,
             initialization: null,
@@ -62,6 +62,31 @@ async function parseManifest(manifest, manifestType) {
             urls: manifestJson.urls,
             mainManifests
         };
+    } else if (manifestType === 'application/vnd.tidal.bts') {
+        const manifestJson = JSON.parse(manifest);
+        
+        return {
+            mimeType: manifestJson.mimeType,
+            codecs: manifestJson.codecs,
+            encryptionType: manifestJson.encryptionType,
+            segments: manifestJson.urls
+        }
+    } else if (manifestType === 'application/vnd.apple.mpegurl') {
+        const parsedManifest = {
+            bandwidth: null,
+            averageBandwidth: null,
+            codecs: null,
+            raw: null,
+            segments: []
+        };
+
+        parsedManifest.bandwidth = parseInt(manifest.match(/BANDWIDTH=\d+/))?.[1];
+        parsedManifest.averageBandwidth = parseInt(manifest.match(/AVERAGE-BANDWIDTH=\d+/))?.[1];
+        parsedManifest.codecs = manifest.match(/CODECS="(.*?)"/)?.[1]?.toLowerCase();
+        parsedManifest.raw = Buffer.from(manifest.match(/data:application\/vnd\.apple\.mpegurl;base64,(.*)/)?.[1], 'base64').toString();
+        parsedManifest.segments = [parsedManifest.raw.match(/#EXT-X-MAP:URI="(.*?)"/)[1], ...Array.from(parsedManifest.raw.matchAll(/#EXTINF:(.*?),\n(.*?)\n/g)).map(i => i[2])];
+
+        return parsedManifest;
     } else {
         throw new Error(`Unknown manifest MIME type "${manifestType}"`);
     }

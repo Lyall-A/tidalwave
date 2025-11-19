@@ -167,7 +167,7 @@ if (options.help || [
             options.trackQuality === 'low' ? 'HIGH' :
             options.trackQuality === 'high' ? 'LOSSLESS' :
             options.trackQuality === 'max' ? 'HI_RES_LOSSLESS' :
-            options.trackQuality;
+            options.trackQuality?.toUpperCase();
 
         const videoQuality =
             options.videoQuality === 'low' ? '480' :
@@ -198,6 +198,7 @@ if (options.help || [
             segmentWaitMin: config.segmentWaitMin,
             segmentWaitMax: config.segmentWaitMax,
             downloadLogPadding: config.downloadLogPadding,
+            useDolbyAtmos: config.useDolbyAtmos
         }).download();
     }
 
