@@ -28,8 +28,10 @@ A TIDAL downloader for tracks, albums, videos, artist discographies and playlist
 * `--url <url>`, `-u`: Download from URL
 * `--track-quality <low|high|max>`, `-tq`: Sets track download quality, defaults to config `trackQuality`
 * `--video-quality <low|high|max|<height>>`, `-vq`: Sets video download quality, defaults to config `videoQuality`
+* `--metadata <yes|no>`, `-md`: Enables or disables all metadata embedding, defaults to config `embedMetadata`
 * `--lyrics <yes|no>`, `-l`: Enables or disables lyrics embedding, defaults to config `getLyrics`
 * `--cover <yes|no>`, `-c`: Enables or disables cover embedding, defaults to config `getCover`
+* `--overwrite <yes|no>`, `-ow`: Enables or disables overwriting for existing downloads, defaults to config `overwriteExisting`
 
 ## Usage
 Coming eventually
@@ -59,8 +61,8 @@ Check out `config.json` for more
 * [FFmpeg](https://www.ffmpeg.org/) - Used to extract FLAC/M4A from MP4 container and embed metadata
 * [Kid3-cli](https://kid3.kde.org) - Alternative option for embedding metadata
 
-## Warning
-There may be a risk of getting banned for using a tool like this, however i've yet to see that happen
+## ⚠️ Warning ⚠️
+There may be a risk of getting banned for using a tool like this
 
 ## How TIDAL authenticates a browser
 * Browser sends request to `https://login.tidal.com/api/email/user/existing` containing a client ID, code challenge, redirect URI, scope, login credentials and more
@@ -71,4 +73,4 @@ There may be a risk of getting banned for using a tool like this, however i've y
 * App sends request to `https://auth.tidal.com/v1/oauth2/device_authorization` containing client ID and scope. Response contains a device code, user code, how long the user code is valid for and a interval for requesting the token
 * App periodically requests a token using the `urn:ietf:params:oauth:grant-type:device_code` grant type to verify sign in, request contains client ID, client secret, the device code from earlier and more
 
-<small>please do not sue me</small>
+<small>please don't come after me tidal</small>

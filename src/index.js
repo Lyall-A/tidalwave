@@ -35,8 +35,10 @@ const options = {
     urls: args.getAll('url'),
     trackQuality: (args.get('track-quality') ?? config.trackQuality)?.toLowerCase(),
     videoQuality: (args.get('video-quality') ?? config.videoQuality)?.toLowerCase(),
+    metadata: args.get('metadata') ?? config.embedMetadata,
     lyrics: args.get('lyrics') ?? config.getLyrics,
-    cover: args.get('cover') ?? config.getCover
+    cover: args.get('cover') ?? config.getCover,
+    overwrite: args.get('overwrite') ?? config.overwriteExisting,
 };
 
 // Show help
@@ -183,8 +185,8 @@ if (options.help || [
             directory,
             mediaFilename,
             coverFilename: config.coverFilename ? formatPath(config.coverFilename, details) : mediaFilename,
-            overwriteExisting: config.overwriteExisting,
-            embedMetadata: config.embedMetadata,
+            overwriteExisting: options.overwrite,
+            embedMetadata: options.metadata,
             metadataEmbedder: config.metadataEmbedder,
             keepCoverFile: config.coverFilename ? true : false,
             getCover: options.cover,
@@ -486,7 +488,7 @@ function showHelp() {
 Usage:
   ${process.argv0}${path.dirname(process.execPath) === process.cwd() ? '' : ' .'} [options...]
 Options:
-  ${argOptions.map(arg => `${
+  ${argOptions.filter(arg => !arg.hidden).map(arg => `${
     `${[
         arg.name ? `--${arg.name}` : null, 
         arg.shortName ? `-${arg.shortName}` : null,

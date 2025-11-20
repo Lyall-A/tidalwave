@@ -45,8 +45,10 @@ module.exports = {
         { name: 'url', shortName: 'u', description: 'Download from URL', valueDescription: 'url' },
         { name: 'track-quality', shortName: 'tq', aliases: ['quality'], shortAliases: ['q'], description: 'Sets track download quality', valueDescription: 'low|high|max' },
         { name: 'video-quality', shortName: 'vq', description: 'Sets video download quality', valueDescription: 'low|high|max|<height>' },
+        { name: 'metadata', shortName: 'md', type: 'bool', description: 'Enables or disables all metadata embedding', valueDescription: 'yes|no' },
         { name: 'lyrics', shortName: 'l', type: 'bool', description: 'Enables or disables lyrics embedding', valueDescription: 'yes|no' },
         { name: 'cover', shortName: 'c', type: 'bool', description: 'Enables or disables cover embedding', valueDescription: 'yes|no' },
+        { name: 'overwrite', shortName: 'ow', type: 'bool', description: 'Enables or disables overwriting for existing downloads', valueDescription: 'yes|no' }
     ],
     tidalVideoCoverSizes: {
         '640': '640x640',
