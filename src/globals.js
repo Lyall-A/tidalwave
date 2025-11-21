@@ -146,6 +146,7 @@ module.exports = {
         { type: 'Coordination' },
         { type: 'Background Vocalist' },
         { type: 'A&R' },
+        { type: 'Creative Director' },
         { type: 'SoundEffects', tagName: 'sound_effects' },
         { type: 'DrumProgrammer', tagName: 'drum_programmer' },
         { type: 'MusicProduction', tagName: 'music_production' },
