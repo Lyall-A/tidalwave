@@ -6,6 +6,7 @@
     "videoFilename": "{{artist.name}} - {{title}}",
     "trackQuality": "MAX",
     "videoQuality": "MAX",
+    "useDolbyAtmos": false,
     "getLyrics": true,
     "syncedLyricsOnly": false,
     "plainLyricsOnly": false,
