@@ -75,8 +75,8 @@ class Download {
             this.segmentUrls = this.manifest.segments;
             this.containerExtension = '.mp4';
             this.mediaExtension =
-                this.manifest.codecs === 'flac' ? '.flac' : // Used for lossless and hi-res lossless
-                this.manifest.codecs === 'ac4' ? '.ac4' : // Used for dolby atmos
+                this.manifest.codec === 'flac' ? '.flac' : // Used for lossless and hi-res lossless
+                this.manifest.codec === 'ac4' ? '.mp4' : // Used for dolby atmos
                 '.m4a'; // used for low quality // TODO: is it safe to assume AAC?
         } else if (this.details.isVideo) {
             const segmentManifests = this.manifest.mainManifests[0].segmentManifests;
@@ -188,15 +188,18 @@ class Download {
     }
 
     async createMedia() {
-        if (!this.embedMetadata || this.metadataEmbedder !== 'ffmpeg' || this.mediaExtension === '.ac4') {
+        if (this.manifest.codec === 'ac4') {
+            this.log(`Dolby AC-4 is not currently supported, keeping original stream!`, 'warn');
+            return fs.copyFileSync(this.getContainerPath(), this.getMediaPath());
+        }
+
+        if (!this.embedMetadata || this.metadataEmbedder !== 'ffmpeg') {
             // Extract from container
             this.log(`Creating ${this.mediaExtension} from ${this.containerExtension} container...`);
             await extractContainer(this.getContainerPath(), this.getMediaPath());
         }
         
         if (this.embedMetadata) {
-            if (this.mediaExtension === '.ac4') return this.log(`Embedding metadata to Dolby AC-4 is not currently possible!`, 'warn');
-
             // Embed metadata
             if (this.metadataEmbedder === 'kid3') {
                 // Embed via kid3
@@ -217,7 +220,7 @@ class Download {
     }
 
     getContainerPath() {
-        return path.join(this.directory, `${this.mediaFilename}${this.containerExtension}`);
+        return path.join(this.directory, `${this.mediaFilename}.original${this.containerExtension}`);
     }
 
     getCoverPath() {

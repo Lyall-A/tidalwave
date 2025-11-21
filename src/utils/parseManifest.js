@@ -4,7 +4,7 @@ async function parseManifest(manifest, manifestType) {
             contentType: null,
             mimeType: null,
             segmentAlignment: null,
-            codecs: null,
+            codec: null,
             bandwidth: null,
             audioSamplingRate: null,
             timescale: null,
@@ -16,7 +16,7 @@ async function parseManifest(manifest, manifestType) {
         };
 
         // TODO: a little less jank perhaps
-        parsedManifest.codecs = manifest.match(/(?:<|\s)codecs="(.*?)"/)?.[1];
+        parsedManifest.codec = manifest.match(/(?:<|\s)codecs="(.*?)"/)?.[1];
         parsedManifest.audioSamplingRate = parseInt(manifest.match(/(?:<|\s)audioSamplingRate="(.*?)"/)?.[1]);
         parsedManifest.initialization = manifest.match(/(?:<|\s)initialization="(.*?)"/)?.[1];
         parsedManifest.media = manifest.match(/(?:<|\s)media="(.*?)"/)?.[1];
@@ -38,7 +38,7 @@ async function parseManifest(manifest, manifestType) {
             const segmentManifests = Array.from(mainManifest.matchAll(/#EXT-X-STREAM-INF:BANDWIDTH=(.*?),AVERAGE-BANDWIDTH=(.*?),CODECS="(.*?)",RESOLUTION=(.*?)\n(.*?)\n/g)).map(i => ({
                 bandwidth: i[1],
                 averageBandwidth: i[2],
-                codecs: i[3],
+                codec: i[3],
                 resolution: i[4],
                 url: i[5],
                 raw: null,
@@ -67,7 +67,7 @@ async function parseManifest(manifest, manifestType) {
         
         return {
             mimeType: manifestJson.mimeType,
-            codecs: manifestJson.codecs,
+            codec: manifestJson.codecs,
             encryptionType: manifestJson.encryptionType,
             segments: manifestJson.urls
         }
@@ -75,14 +75,14 @@ async function parseManifest(manifest, manifestType) {
         const parsedManifest = {
             bandwidth: null,
             averageBandwidth: null,
-            codecs: null,
+            codec: null,
             raw: null,
             segments: []
         };
 
         parsedManifest.bandwidth = parseInt(manifest.match(/BANDWIDTH=\d+/))?.[1];
         parsedManifest.averageBandwidth = parseInt(manifest.match(/AVERAGE-BANDWIDTH=\d+/))?.[1];
-        parsedManifest.codecs = manifest.match(/CODECS="(.*?)"/)?.[1]?.toLowerCase();
+        parsedManifest.codec = manifest.match(/CODECS="(.*?)"/)?.[1]?.toLowerCase();
         parsedManifest.raw = Buffer.from(manifest.match(/data:application\/vnd\.apple\.mpegurl;base64,(.*)/)?.[1], 'base64').toString();
         parsedManifest.segments = [parsedManifest.raw.match(/#EXT-X-MAP:URI="(.*?)"/)[1], ...Array.from(parsedManifest.raw.matchAll(/#EXTINF:(.*?),\n(.*?)\n/g)).map(i => i[2])];
 
