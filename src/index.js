@@ -162,7 +162,7 @@ if (options.help || [
                 null,
         };
 
-        const directory = path.join(execDir, formatPath(details.isTrack ? config.albumDirectory : config.videoDirectory, details));
+        const directory = path.resolve(execDir, formatPath(details.isTrack ? config.albumDirectory : config.videoDirectory, details));
         const mediaFilename = formatPath(details.isTrack ? config.trackFilename : config.videoFilename, details);
 
         const trackQuality =
