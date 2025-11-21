@@ -13,7 +13,7 @@ function createMedia(inputPath, outputPath, coverPath, metadata, streams = 1) {
             `-disposition:${streams}`, 'attached_pic',
         ] : []),
         '-map_metadata', '-1',
-        ...metadata.filter(i => i[1] !== undefined && i[1] !== null).map(([tag, value]) => ['-metadata', `${tag}=${value}`]).flat(),
+        ...metadata.map(([tag, value]) => ['-metadata', `${tag}=${value}`]).flat(),
         '-c', 'copy',
         outputPath,
         '-y'

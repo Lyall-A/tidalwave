@@ -4,7 +4,7 @@ const { config } = require('../globals');
 
 function embedMetadata(file, tags) {
     return spawn(config.kid3CliPath, [
-        ...tags.filter(i => i[1] !== undefined && i[1] !== null).map(([tag, value, isFile]) => {
+        ...tags.map(([tag, value, isFile]) => {
             if (isFile) {
                 return ['-c', `set "${escapeQuotes(tag)}":"${escapeQuotes(value)}" ""`];
             } else {

@@ -164,8 +164,14 @@ class Download {
                 this.lyrics?.syncedLyrics || this.lyrics?.plainLyrics],
             ...creditMetadata,
             ...customMetadata
-        ];
-        // console.log(this.metadata);
+        ].filter(([tag, value]) => value !== undefined && value !== null);
+        
+        // most overkill debug log ever
+        this.logger.debug(`Metadata:\n${this.metadata.map(([tag, value]) => {
+            const padding = ' '.repeat(Logger.getDisplayedLength(this.logger.getLevel('debug')?.prefix || ''));
+            const valuePrefix = `${tag}: `.padEnd(25, ' ');
+            return `${padding}${valuePrefix}${value.toString().replace(/\n/g, `\n${padding}${' '.repeat(Logger.getDisplayedLength(valuePrefix))}`)}`;
+        }).join('\n')}`);
     }
         
     async downloadSegments() {
