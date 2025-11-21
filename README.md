@@ -1,18 +1,21 @@
 # Tidalwave
-A TIDAL downloader for tracks, albums, videos, artist discographies and playlists
+A CLI-based TIDAL downloader capable of downloading just about anything
 
 ## Features
-* **Lossless audio** - Downloads in lossless quality by default
-* **Metadata** - Embeds all standard music metadata (title, artists, album, date, etc.)
-* **Lyrics** - Embeds synced/plain lyrics
-* **Cover art** - Downloads and embeds album cover art
-* **Advanced metadata** - Embeds as much metadata as possible, including BPM, copyright, barcode, replaygain, explicit rating and more
+* **Lossless Audio** - Downloads in Hi-Res Lossless quality by default
 * **Videos** - Can download videos from TIDAL (music videos, etc.)
 * **Playlists** - Can download all tracks from a playlist
-* **Discographies** - Can download an entire artist's discography
+* **Artist Discography** - Can download an entire artist's discography
+* **Advanced Metadata** - Includes as much metadata as possible, including title, album, artist, date, BPM, copyright, barcode, replaygain, explicit rating, credits and more
+* **Lyrics** - Includes synced/plain lyrics if possible
+* **Cover Art** - Downloads the album cover art
 * **Searching** - Allows searching instead of having to provide URL's or ID's
 
+## Usage
+Coming soon, run `./tidalwave --help` for a list of available commands
+
 ## Arguments
+For a list of available commands, run `tidalwave --help`
 * `--help`, `-h`: Displays help menu
 * `--track <id>`, `-t`: Downloads track
 * `--album <id>`, `-m`: Downloads album
@@ -32,9 +35,6 @@ A TIDAL downloader for tracks, albums, videos, artist discographies and playlist
 * `--lyrics <yes|no>`, `-l`: Enables or disables lyrics embedding, defaults to config `getLyrics`
 * `--cover <yes|no>`, `-c`: Enables or disables cover embedding, defaults to config `getCover`
 * `--overwrite <yes|no>`, `-ow`: Enables or disables overwriting for existing downloads, defaults to config `overwriteExisting`
-
-## Usage
-Coming eventually
 
 ## Screenshots
 <img src="https://raw.githubusercontent.com/Lyall-A/tidalwave/main/assets/screenshot-1.png">
@@ -57,11 +57,9 @@ Coming eventually
 Check out `config.json` for more
 
 ## Dependencies
-* [Node.js](https://nodejs.org) - JavaScript runtime
-* [FFmpeg](https://www.ffmpeg.org/) - Used to extract FLAC/M4A from MP4 container and embed metadata
-* [Kid3-cli](https://kid3.kde.org) - Alternative option for embedding metadata
+* JavaScript runtime, such as [Node.js](https://nodejs.org/) or [Bun](https://bun.com/)
+* [FFmpeg](https://www.ffmpeg.org/)
+* [Kid3-cli](https://kid3.kde.org) (Optional)
 
 ## ⚠️ Warning ⚠️
 There may be a risk of getting banned for using a tool like this
-
-<small>please do not come after me TIDAL 🙏</small>
