@@ -45,6 +45,15 @@ function parseConfig(configPath) {
         version = 2;
     }
 
+    if (version === 2) {
+        if (config.tagSeperator !== undefined) {
+            config.artistTagSeparator = config.tagSeperator;
+            delete config.tagSeperator;
+        }
+
+        version = 3;
+    }
+
     config._version = version;
 
     if (version !== jsonConfig._version) fs.writeFileSync(configPath, JSON.stringify(config, null, 4));

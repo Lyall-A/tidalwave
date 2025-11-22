@@ -48,7 +48,9 @@ For a list of available commands, run `tidalwave --help`
 
 `allowUserUploads` can be set to allow/block user uploaded tracks
 
-`tagSeperator` the seperator used when adding multiple values to the same metadata tag (eg. artists)
+`artistTagSeparator` the separator used for multiple artists in metadata
+
+`roleTagSeparator` the separator used for multiple roles in metadata (composer, lyricist, etc.)
 
 `coverFilename` can be set to null to delete jpg after embedding
 

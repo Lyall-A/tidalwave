@@ -40,7 +40,8 @@ class Download {
         this.syncedLyricsOnly = options.syncedLyricsOnly ?? false;
         this.plainLyricsOnly = options.plainLyricsOnly ?? false;
         this.useArtistsTag = options.useArtistsTag ?? true;
-        this.tagSeperator = options.tagSeperator;
+        this.artistTagSeparator = options.artistTagSeparator;
+        this.roleTagSeparator = options.roleTagSeparator;
         this.customMetadata = options.customMetadata;
         this.keepContainerFile = options.keepContainerFile ?? false;
         this.segmentWaitMin = options.segmentWaitMin ?? 0;
@@ -134,16 +135,16 @@ class Download {
         const trackCredits = this.details.album?.trackCredits.find(({ track }) => track.id === this.details.id)?.credits || [];
 
         const customMetadata = this.customMetadata?.map(i => ([i[0], formatString(i[1], this.details)])) || [];
-        const creditMetadata = [...trackCredits, ...albumCredits].map(credit => credit.tagName ? [credit.tagName, normalizeTag(credit.contributors.map(i => i.name))] : null).filter(i => i);
+        const creditMetadata = [...trackCredits, ...albumCredits].map(credit => credit.tagName ? [credit.tagName, normalizeTag(credit.contributors.map(i => i.name), this.roleTagSeparator)] : null).filter(i => i);
 
         this.metadata = [
             ['title', this.details.title],
-            ['artist', normalizeTag(this.details.artists?.map(i => i.name), !this.useArtistsTag ? this.tagSeperator : null)],
-            ['artists', this.useArtistsTag ? normalizeTag(this.details.artists?.map(i => i.name), this.tagSeperator) : null],
+            ['artist', normalizeTag(this.details.artists?.map(i => i.name), !this.useArtistsTag ? this.artistTagSeparator : null)],
+            ['artists', this.useArtistsTag ? normalizeTag(this.details.artists?.map(i => i.name), this.artistTagSeparator) : null],
             ['version', track?.version],
             ['album', album?.title],
-            ['albumartist', normalizeTag(this.details.albumArtists?.map(i => i.name), !this.useArtistsTag ? this.tagSeperator : null)],
-            ['albumartists', this.useArtistsTag ? normalizeTag(this.details.albumArtists?.map(i => i.name), this.tagSeperator) : null],
+            ['albumartist', normalizeTag(this.details.albumArtists?.map(i => i.name), !this.useArtistsTag ? this.artistTagSeparator : null)],
+            ['albumartists', this.useArtistsTag ? normalizeTag(this.details.albumArtists?.map(i => i.name), this.artistTagSeparator) : null],
             ['albumversion', album?.version],
             ['releasetype', album?.type && album.type.length > 2 ? capitalize(album.type) : album?.type],
             ['date', this.details.releaseDate],

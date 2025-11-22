@@ -1,8 +1,6 @@
-const { config } = require('../globals');
-
-function normalizeTag(value, seperator = config.tagSeperator) {
+function normalizeTag(value, separator) {
     if (value instanceof Array) {
-        if (seperator) return value.join(seperator);
+        if (separator) return value.join(separator);
         return value[0];
     } else {
         return value;

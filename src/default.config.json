@@ -1,5 +1,5 @@
 {
-    "_version": 2,
+    "_version": 3,
     "albumDirectory": "./Downloads/{{albumArtist.name}}/{{album.title}} ({{releaseYear}})",
     "trackFilename": "{{artist.name}} - {{album.title}} - {{title}} - {{trackNumberPadded}}",
     "videoDirectory": "./Downloads/{{artist.name}}/{{title}} ({{releaseYear}})",
@@ -11,7 +11,8 @@
     "syncedLyricsOnly": false,
     "plainLyricsOnly": false,
     "embedMetadata": true,
-    "tagSeperator": "; ",
+    "artistTagSeparator": "; ",
+    "roleTagSeparator": ";",
     "useArtistsTag": false,
     "allowUserUploads": false,
     "getCover": true,
