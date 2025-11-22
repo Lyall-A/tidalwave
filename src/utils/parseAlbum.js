@@ -10,8 +10,9 @@ function parseAlbum(album, additional = { }) {
     return {
         id: album.id,
         title: album.title,
-        version: album.version,
+        version: album.version, // NOTE: title seems to already include version, unlike track title
         description: additional?.description,
+        type: album.type,
         duration: album.duration,
         upload: album.upload,
         trackCount: album.numberOfTracks,

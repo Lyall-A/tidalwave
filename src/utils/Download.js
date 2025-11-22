@@ -11,6 +11,7 @@ const extractContainer = require('./extractContainer');
 const getLyrics = require('./getLyrics');
 const formatString = require('./formatString');
 const normalizeTag = require('./normalizeTag');
+const capitalize = require('./capitalize');
 
 class Download {
     playbackInfo;
@@ -139,9 +140,12 @@ class Download {
             ['title', this.details.title],
             ['artist', normalizeTag(this.details.artists?.map(i => i.name), !this.useArtistsTag ? this.tagSeperator : null)],
             ['artists', this.useArtistsTag ? normalizeTag(this.details.artists?.map(i => i.name), this.tagSeperator) : null],
+            ['version', track?.version],
             ['album', album?.title],
             ['albumartist', normalizeTag(this.details.albumArtists?.map(i => i.name), !this.useArtistsTag ? this.tagSeperator : null)],
             ['albumartists', this.useArtistsTag ? normalizeTag(this.details.albumArtists?.map(i => i.name), this.tagSeperator) : null],
+            ['albumversion', album?.version],
+            ['releasetype', album?.type && album.type.length > 2 ? capitalize(album.type) : album?.type],
             ['date', this.details.releaseDate],
             ['originalyear', this.details.releaseYear],
             ['tracktotal', album?.trackCount],
@@ -157,7 +161,7 @@ class Download {
             ['isrc', track?.isrc],
             ['itunesadvisory', this.details.explicit === true ? '1' : this.details.explicit === false ? '2' : null],
             ['bpm', track?.bpm],
-            ['initialkey', [track?.key?.toUpperCase(), track?.keyScale ? `${track.keyScale.charAt(0).toUpperCase()}${track.keyScale.substring(1).toLowerCase()}` : null].filter(i => i).join(' ') || null],
+            ['initialkey', [track?.key?.toUpperCase(), track?.keyScale ? capitalize(track.keyScale) : null].filter(i => i).join(' ') || null],
             ['lyrics',
                 this.syncedLyricsOnly ? this.lyrics?.syncedLyrics :
                 this.plainLyricsOnly ? this.lyrics?.plainLyrics :
