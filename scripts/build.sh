@@ -27,6 +27,7 @@ bun build \
 
 cp ./default.config.json "$out_dir/config.json"
 cp ../README.md "$out_dir/README.md"
+cp ../LICENSE "$out_dir/LICENSE"
 cp -r "$bin_dir/$os" "$out_dir/bin"
 chmod +x "$out_dir/$filename$file_ext"
 
