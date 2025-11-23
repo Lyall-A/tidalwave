@@ -29,7 +29,7 @@ function tidalApi(api = 'openv2', path, options = { }) {
         let json;
         try { json = JSON.parse(text) } catch (err) { };
 
-        logger.debug(`API: ${api}, Path: ${path}, Params: ${urlSearchParams.toString()}, Response: ${status}${statusText ? ` ${statusText}` : ''}`);
+        logger.debug(`API: ${api}, path: ${path}, params: ${urlSearchParams.toString()}, response: ${status}${statusText ? ` ${statusText}` : ''}`);
 
         return {
             status,

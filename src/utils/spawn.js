@@ -1,10 +1,12 @@
 const child_process = require('child_process');
 const path = require('path');
 
-const { execDir } = require('../globals');
+const { execDir, logger } = require('../globals');
 
 function spawn(command, args) {
     return new Promise((resolve, reject) => {
+        logger.debug(`Spawning '${command}', args: ${args.join(', ')}`);
+
         const spawnedProcess = child_process.spawn(command, args, {
             env: {
                 ...process.env,

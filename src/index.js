@@ -53,7 +53,6 @@ if (options.help || [
 ].length === 0) showHelp();
 
 (async () => {
-    logger.info('Authorizing...');
     await authorize();
 
     const tracks = [];
@@ -110,7 +109,13 @@ if (options.help || [
     // const startDate = Date.now();
 
     logger.emptyLine();
-    logger.info(`Downloading ${Logger.applyColor({ bold: true }, queue.length)} track(s)...`);
+    logger.info(`Downloading ${Object.entries({
+            track: queue.filter(item => item.track).length,
+            video: queue.filter(item => item.video).length,
+        })
+            .filter(([type, count]) => count > 0)
+            .map(([type, count]) => `${Logger.applyColor({ bold: true }, count)} ${type}${count !== 1 ? 's' : ''}`)
+            .join(', ')}...`);
 
     for (const item of queue) {
         const details = {
@@ -407,7 +412,7 @@ async function authorize() {
 
     if (secrets.refreshToken && secrets.clientId && secrets.clientSecret) {
         // Refresh token exists
-        logger.debug('Refreshing token');
+        logger.info('Refreshing token');
         await getToken('refresh_token', {
             refreshToken: secrets.refreshToken,
             clientId: secrets.clientId,
