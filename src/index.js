@@ -193,6 +193,7 @@ if (options.help || [
             getLyrics: options.lyrics,
             syncedLyricsOnly: config.syncedLyricsOnly,
             plainLyricsOnly: config.plainLyricsOnly,
+            externalLyrics: config.externalLyrics,
             useArtistsTag: config.useArtistsTag,
             artistTagSeparator: config.artistTagSeparator,
             roleTagSeparator: config.roleTagSeparator,

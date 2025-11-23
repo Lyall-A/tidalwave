@@ -10,6 +10,7 @@
     "getLyrics": true,
     "syncedLyricsOnly": false,
     "plainLyricsOnly": false,
+    "externalLyrics": false,
     "embedMetadata": true,
     "artistTagSeparator": "; ",
     "roleTagSeparator": ";",

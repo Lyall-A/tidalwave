@@ -39,6 +39,7 @@ class Download {
         this.getLyrics = options.getLyrics ?? true;
         this.syncedLyricsOnly = options.syncedLyricsOnly ?? false;
         this.plainLyricsOnly = options.plainLyricsOnly ?? false;
+        this.externalLyrics = options.externalLyrics ?? false;
         this.useArtistsTag = options.useArtistsTag ?? true;
         this.artistTagSeparator = options.artistTagSeparator;
         this.roleTagSeparator = options.roleTagSeparator;
@@ -110,7 +111,12 @@ class Download {
         // Get lyrics
         if (this.getLyrics && this.details.isTrack) {
             this.log('Getting lyrics...');
-            this.lyrics = await getLyrics(this.details.id).catch(err => { }); // TODO: maybe don't log or change to debug?
+            this.lyrics = await getLyrics(this.details.id).then(lyrics =>
+                this.syncedLyricsOnly ? lyrics?.syncedLyrics : // Synced lyrics only
+                this.plainLyricsOnly ? lyrics?.plainLyrics : // Plain lyrics only
+                lyrics?.syncedLyrics || lyrics?.plainLyrics // Whatever is available
+            ).catch(err => { });
+            if (this.externalLyrics && this.lyrics) fs.writeFileSync(this.getLyricsPath(), this.lyrics); // Save lyrics externally
         }
 
         // Download cover
@@ -163,10 +169,7 @@ class Download {
             ['itunesadvisory', this.details.explicit === true ? '1' : this.details.explicit === false ? '2' : null],
             ['bpm', track?.bpm],
             ['initialkey', [track?.key?.toUpperCase(), track?.keyScale ? capitalize(track.keyScale) : null].filter(i => i).join(' ') || null],
-            ['lyrics',
-                this.syncedLyricsOnly ? this.lyrics?.syncedLyrics :
-                this.plainLyricsOnly ? this.lyrics?.plainLyrics :
-                this.lyrics?.syncedLyrics || this.lyrics?.plainLyrics],
+            ['lyrics', this.lyrics],
             ...creditMetadata,
             ...customMetadata
         ].filter(([tag, value]) => value !== undefined && value !== null);
@@ -236,6 +239,10 @@ class Download {
 
     getCoverPath() {
         return path.join(this.directory, `${this.coverFilename}${this.coverExtension}`);
+    }
+
+    getLyricsPath() {
+        return path.join(this.directory, `${this.mediaFilename}.lrc`);
     }
 
     log(msg, level) {
