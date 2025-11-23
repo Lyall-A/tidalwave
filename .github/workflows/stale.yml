@@ -1,0 +1,26 @@
+name: Close stale issues and PR's
+on:
+  schedule:
+    - cron: '0 0 * * *'
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: actions/stale@v10
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          days-before-stale: 60
+          days-before-close: 7
+          remove-stale-when-updated: true
+          stale-issue-message: |
+            This issue has been marked stale because there has not been any recent activity.
+            Please update this issue if it can still be reproduced.
+          stale-issue-label: 'stale'
+          exempt-issue-labels: 'keep'
+          stale-pr-message: |
+            This pull request has been marked stale because there has not been any recent activity.
+          stale-pr-label: 'stale'
+          exempt-pr-labels: 'keep'

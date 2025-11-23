@@ -13,7 +13,8 @@
     "build:windows-x64": "cd scripts && bash ./build-windows-x64.sh",
     "build:macos-x64": "cd scripts && bash ./build-macos-x64.sh",
     "build:macos-arm64": "cd scripts && bash ./build-macos-arm64.sh",
-    "build:all": "cd scripts && bash ./build-all.sh"
+    "build:all": "cd scripts && bash ./build-all.sh",
+    "download-binaries": "cd scripts && bash ./download-binaries.sh"
   },
   "repository": {
     "type": "git",
