@@ -13,23 +13,15 @@ const formatString = require('./formatString');
 const normalizeTag = require('./normalizeTag');
 const capitalize = require('./capitalize');
 
+// TODO: parse low/high/max quality types here instead of main and set default
 class Download {
-    playbackInfo;
-    manifest;
-    segmentUrls;
-    containerExtension;
-    mediaExtension;
-    coverExtension = '.jpg';
-    lyrics;
-    metadata;
-
     constructor(options = { }) {
         this.details = options.details;
         this.logger = options.logger;
-        this.trackQuality = options.trackQuality;
-        this.videoQuality = options.videoQuality;
         this.directory = options.directory;
         this.mediaFilename = options.mediaFilename;
+        this.trackQuality = options.trackQuality;
+        this.videoQuality = options.videoQuality;
         this.coverFilename = options.coverFilename ?? 'cover';
         this.overwriteExisting = options.overwriteExisting ?? false;
         this.embedMetadata = options.embedMetadata ?? true;
@@ -44,11 +36,20 @@ class Download {
         this.artistTagSeparator = options.artistTagSeparator;
         this.roleTagSeparator = options.roleTagSeparator;
         this.customMetadata = options.customMetadata;
-        this.keepContainerFile = options.keepContainerFile ?? false;
+        this.keepOriginalFile = options.keepOriginalFile ?? false;
         this.segmentWaitMin = options.segmentWaitMin ?? 0;
         this.segmentWaitMax = options.segmentWaitMax ?? 0;
         this.downloadLogPadding = options.downloadLogPadding ?? 0;
         this.useDolbyAtmos = options.useDolbyAtmos ?? false;
+
+        this.playbackInfo = options.playbackInfo;
+        this.manifest = options.manifest;
+        this.segmentUrls = options.segmentUrls;
+        this.originalExtension = options.originalExtension;
+        this.mediaExtension = options.mediaExtension;
+        this.coverExtension = options.coverExtension ?? '.jpg';
+        this.lyrics = options.lyrics;
+        this.metadata = options.metadata;
     }
     
     async download() {
@@ -61,7 +62,7 @@ class Download {
         await this.downloadSegments(); // Download segments
         if (this.embedMetadata) await this.getMetadata(); // Get metadata
         await this.createMedia(); // Create output
-        if (!this.keepContainerFile) fs.unlinkSync(this.getContainerPath()); // Delete container file
+        if (!this.keepContainerFile) fs.unlinkSync(this.getOriginalPath()); // Delete container file
         if (!this.keepCoverFile && fs.existsSync(this.getCoverPath())) fs.unlinkSync(this.getCoverPath()); // Delete cover file
 
         this.log(`Completed (${Math.floor((Date.now() - startDate) / 1000)}s)`);
@@ -76,7 +77,7 @@ class Download {
         
         if (this.details.isTrack) {
             this.segmentUrls = this.manifest.segments;
-            this.containerExtension = '.mp4';
+            this.originalExtension = '.mp4';
             this.mediaExtension =
                 this.manifest.codec === 'flac' ? '.flac' : // Used for lossless and hi-res lossless
                 this.manifest.codec === 'ac4' ? '.mp4' : // Used for dolby atmos
@@ -100,7 +101,7 @@ class Download {
             // this.segmentUrls = segmentManifests[segmentManifests.length - 1].segments;
             this.segmentUrls = segmentManifest.segments;
             
-            this.containerExtension = '.ts';
+            this.originalExtension = '.ts';
             this.mediaExtension = '.mp4';
         }
 
@@ -159,10 +160,10 @@ class Download {
             ['tracknumber', track?.trackNumber],
             ['disctotal', album?.volumeCount],
             ['discnumber', track?.volumeNumber],
-            ['replaygain_album_gain', this.playbackInfo.albumReplayGain],
-            ['replaygain_album_peak', this.playbackInfo.albumPeakAmplitude],
-            ['replaygain_track_gain', this.playbackInfo.trackReplayGain || track?.replayGain], // NOTE: details.track.replayGain is actually playbackInfo.albumReplayGain
-            ['replaygain_track_peak', this.playbackInfo.trackPeakAmplitude || track?.peak],
+            ['replaygain_album_gain', this.playbackInfo?.albumReplayGain],
+            ['replaygain_album_peak', this.playbackInfo?.albumPeakAmplitude],
+            ['replaygain_track_gain', this.playbackInfo?.trackReplayGain || track?.replayGain], // NOTE: details.track.replayGain is actually playbackInfo.albumReplayGain
+            ['replaygain_track_peak', this.playbackInfo?.trackPeakAmplitude || track?.peak],
             ['copyright', track?.copyright],
             ['barcode', album?.upc],
             ['isrc', track?.isrc],
@@ -183,7 +184,7 @@ class Download {
     }
         
     async downloadSegments() {
-        const stream = fs.createWriteStream(this.getContainerPath());
+        const stream = fs.createWriteStream(this.getOriginalPath());
 
         for (let segmentIndex = 0; segmentIndex < this.segmentUrls.length; segmentIndex++) {
             const segmentUrl = this.segmentUrls[segmentIndex]
@@ -202,15 +203,15 @@ class Download {
     }
 
     async createMedia() {
-        if (this.manifest.codec === 'ac4') {
+        if (this.manifest?.codec === 'ac4') {
             this.log(`Dolby AC-4 is not currently supported, keeping original stream!`, 'warn');
-            return fs.copyFileSync(this.getContainerPath(), this.getMediaPath());
+            return fs.copyFileSync(this.getOriginalPath(), this.getMediaPath());
         }
 
         if (!this.embedMetadata || this.metadataEmbedder !== 'ffmpeg') {
             // Extract from container
-            this.log(`Creating ${this.mediaExtension} from ${this.containerExtension} container...`);
-            await extractContainer(this.getContainerPath(), this.getMediaPath());
+            this.log(`Creating ${this.mediaExtension} from ${this.originalExtension} container...`);
+            await extractContainer(this.getOriginalPath(), this.getMediaPath());
         }
         
         if (this.embedMetadata) {
@@ -223,8 +224,8 @@ class Download {
                 });
             } else {
                 // Extract and embed via FFmpeg
-                this.log(`Creating ${this.mediaExtension} with metadata from ${this.containerExtension} container...`);
-                await createMedia(this.getContainerPath(), this.getMediaPath(), fs.existsSync(this.getCoverPath()) ? this.getCoverPath() : undefined, this.metadata, this.details.isVideo ? 2 : 1);
+                this.log(`Creating ${this.mediaExtension} with metadata from ${this.originalExtension} container...`);
+                await createMedia(this.getOriginalPath(), this.getMediaPath(), this.metadata, fs.existsSync(this.getCoverPath()) ? this.getCoverPath() : undefined, this.details.isVideo ? 2 : 1);
             }
         }
     }
@@ -233,8 +234,8 @@ class Download {
         return path.join(this.directory, `${this.mediaFilename}${this.mediaExtension}`);
     }
 
-    getContainerPath() {
-        return path.join(this.directory, `${this.mediaFilename}.original${this.containerExtension}`);
+    getOriginalPath() {
+        return path.join(this.directory, `${this.mediaFilename}.original${this.originalExtension}`);
     }
 
     getCoverPath() {

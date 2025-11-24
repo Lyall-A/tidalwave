@@ -43,6 +43,7 @@ module.exports = {
         { name: 'search:artist', shortName: 's:a', description: 'Downloads top search result for artists', valueDescription: 'query' },
         { name: 'search:playlist', shortName: 's:p', description: 'Downloads top search result for playlists', valueDescription: 'query' },
         { name: 'url', shortName: 'u', description: 'Download from URL', valueDescription: 'url' },
+        { name: 'update', description: 'Update an existing file with metadata from TIDAL, without downloading', valueDescription: 'path' },
         { name: 'track-quality', shortName: 'tq', aliases: ['quality'], shortAliases: ['q'], description: 'Sets track download quality', valueDescription: 'low|high|max' },
         { name: 'video-quality', shortName: 'vq', description: 'Sets video download quality', valueDescription: 'low|high|max|<height>' },
         { name: 'metadata', shortName: 'md', type: 'bool', description: 'Enables or disables all metadata embedding', valueDescription: 'yes|no' },
