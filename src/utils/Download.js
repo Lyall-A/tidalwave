@@ -62,7 +62,7 @@ class Download {
         await this.downloadSegments(); // Download segments
         if (this.embedMetadata) await this.getMetadata(); // Get metadata
         await this.createMedia(); // Create output
-        if (!this.keepContainerFile) fs.unlinkSync(this.getOriginalPath()); // Delete container file
+        if (!this.keepOriginalFile) fs.unlinkSync(this.getOriginalPath()); // Delete container file
         if (!this.keepCoverFile && fs.existsSync(this.getCoverPath())) fs.unlinkSync(this.getCoverPath()); // Delete cover file
 
         this.log(`Completed (${Math.floor((Date.now() - startDate) / 1000)}s)`);

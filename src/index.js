@@ -185,7 +185,6 @@ if (options.help || [
             options.videoQuality === 'max' ? null :
             options.videoQuality;
         
-            
         if (options.updates[itemIndex]) {
             const updatePath = path.resolve(execDir, options.updates[itemIndex]);
             const updatePathDirectory = path.dirname(updatePath);
@@ -197,11 +196,23 @@ if (options.help || [
                 logger,
                 directory: updatePathDirectory,
                 mediaFilename: updatePathFilename,
+                coverFilename: updatePathFilename,
+
+                // metadataEmbedder: config.metadataEmbedder,
+                keepCoverFile: config.coverFilename ? true : false,
+                getCover: options.cover,
+                getLyrics: options.lyrics,
+                syncedLyricsOnly: config.syncedLyricsOnly,
+                plainLyricsOnly: config.plainLyricsOnly,
+                externalLyrics: config.externalLyrics,
+                useArtistsTag: config.useArtistsTag,
+                artistTagSeparator: config.artistTagSeparator,
+                roleTagSeparator: config.roleTagSeparator,
+                customMetadata: config.customMetadata,
+                downloadLogPadding: config.downloadLogPadding,
+
                 originalExtension: updatePathExtension,
                 mediaExtension: updatePathExtension,
-                // TODO: add some of these configs
-                getCover: false,
-                getLyrics: false
             });
 
             await download.getMetadata(); // Get metadata
