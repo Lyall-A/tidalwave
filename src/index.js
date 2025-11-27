@@ -198,7 +198,7 @@ if (options.help || [
                 mediaFilename: updatePathFilename,
                 coverFilename: updatePathFilename,
 
-                // metadataEmbedder: config.metadataEmbedder,
+                metadataEmbedder: config.metadataEmbedder,
                 keepCoverFile: config.coverFilename ? true : false,
                 getCover: options.cover,
                 getLyrics: options.lyrics,

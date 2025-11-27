@@ -204,13 +204,13 @@ class Download {
 
     async createMedia() {
         if (this.manifest?.codec === 'ac4') {
-            this.log(`Dolby AC-4 is not currently supported, keeping original stream!`, 'warn');
+            this.log('Dolby AC-4 is not currently supported, keeping original stream!', 'warn');
             return fs.copyFileSync(this.getOriginalPath(), this.getMediaPath());
         }
 
         if (!this.embedMetadata || this.metadataEmbedder !== 'ffmpeg') {
             // Extract from container
-            this.log(`Creating ${this.mediaExtension} from ${this.originalExtension} container...`);
+            this.log(`Converting to ${this.mediaExtension}...`);
             await extractContainer(this.getOriginalPath(), this.getMediaPath());
         }
         
@@ -224,7 +224,7 @@ class Download {
                 });
             } else {
                 // Extract and embed via FFmpeg
-                this.log(`Creating ${this.mediaExtension} with metadata from ${this.originalExtension} container...`);
+                this.log(`Converting to ${this.mediaExtension} with metadata...`);
                 await createMedia(this.getOriginalPath(), this.getMediaPath(), this.metadata, fs.existsSync(this.getCoverPath()) ? this.getCoverPath() : undefined, this.details.isVideo ? 2 : 1);
             }
         }
