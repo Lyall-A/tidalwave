@@ -2,7 +2,7 @@ const spawn = require('./spawn');
 
 const { config } = require('../globals');
 
-function createMedia(inputPath, outputPath, coverPath, metadata, streams = 1) {
+function createMedia(inputPath, outputPath, metadata, coverPath, streams = 1) {
     return spawn(config.ffmpegPath, [
         '-i', inputPath,
         ...(coverPath ? [

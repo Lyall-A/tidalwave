@@ -29,6 +29,7 @@ For a list of available commands, run `tidalwave --help`
 * `--search:artist <query>`, `-s:a`: Downloads top search result for artists
 * `--search:playlist <query>`, `-s:p`: Downloads top search result for playlists
 * `--url <url>`, `-u`: Download from URL
+* `--update <path>`: Update an existing file with metadata from TIDAL, without downloading
 * `--track-quality <low|high|max>`, `-tq`: Sets track download quality, defaults to config `trackQuality`
 * `--video-quality <low|high|max|<height>>`, `-vq`: Sets video download quality, defaults to config `videoQuality`
 * `--metadata <yes|no>`, `-md`: Enables or disables all metadata embedding, defaults to config `embedMetadata`

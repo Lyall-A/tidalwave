@@ -33,6 +33,7 @@ const options = {
         ...args.getAll('search:playlist').map(query => ({ type: 'playlist', query })),
     ],
     urls: args.getAll('url'),
+    updates: args.getAll('update'),
     trackQuality: (args.get('track-quality') ?? config.trackQuality)?.toLowerCase(),
     videoQuality: (args.get('video-quality') ?? config.videoQuality)?.toLowerCase(),
     metadata: args.get('metadata') ?? config.embedMetadata,
@@ -117,7 +118,9 @@ if (options.help || [
             .map(([type, count]) => `${Logger.applyColor({ bold: true }, count)} ${type}${count !== 1 ? 's' : ''}`)
             .join(', ')}...`);
 
-    for (const item of queue) {
+    for (let itemIndex = 0; itemIndex < queue.length; itemIndex++) {
+        const item = queue[itemIndex];
+
         const details = {
             track: item.track,
             album: item.album,
@@ -181,34 +184,70 @@ if (options.help || [
             options.videoQuality === 'high' ? '720' :
             options.videoQuality === 'max' ? null :
             options.videoQuality;
+        
+        if (options.updates[itemIndex]) {
+            const updatePath = path.resolve(execDir, options.updates[itemIndex]);
+            const updatePathDirectory = path.dirname(updatePath);
+            const updatePathExtension = path.extname(updatePath);
+            const updatePathFilename = path.basename(updatePath, updatePathExtension);
 
-        await new Download({
-            details,
-            logger,
-            trackQuality,
-            videoQuality,
-            directory,
-            mediaFilename,
-            coverFilename: config.coverFilename ? formatPath(config.coverFilename, details) : mediaFilename,
-            overwriteExisting: options.overwrite,
-            embedMetadata: options.metadata,
-            metadataEmbedder: config.metadataEmbedder,
-            keepCoverFile: config.coverFilename ? true : false,
-            getCover: options.cover,
-            getLyrics: options.lyrics,
-            syncedLyricsOnly: config.syncedLyricsOnly,
-            plainLyricsOnly: config.plainLyricsOnly,
-            externalLyrics: config.externalLyrics,
-            useArtistsTag: config.useArtistsTag,
-            artistTagSeparator: config.artistTagSeparator,
-            roleTagSeparator: config.roleTagSeparator,
-            customMetadata: config.customMetadata,
-            keepContainerFile: config.debug ? true : false,
-            segmentWaitMin: config.segmentWaitMin,
-            segmentWaitMax: config.segmentWaitMax,
-            downloadLogPadding: config.downloadLogPadding,
-            useDolbyAtmos: config.useDolbyAtmos
-        }).download();
+            const download = new Download({
+                details,
+                logger,
+                directory: updatePathDirectory,
+                mediaFilename: updatePathFilename,
+                coverFilename: updatePathFilename,
+
+                metadataEmbedder: config.metadataEmbedder,
+                keepCoverFile: config.coverFilename ? true : false,
+                getCover: options.cover,
+                getLyrics: options.lyrics,
+                syncedLyricsOnly: config.syncedLyricsOnly,
+                plainLyricsOnly: config.plainLyricsOnly,
+                externalLyrics: config.externalLyrics,
+                useArtistsTag: config.useArtistsTag,
+                artistTagSeparator: config.artistTagSeparator,
+                roleTagSeparator: config.roleTagSeparator,
+                customMetadata: config.customMetadata,
+                downloadLogPadding: config.downloadLogPadding,
+
+                originalExtension: updatePathExtension,
+                mediaExtension: updatePathExtension,
+            });
+
+            await download.getMetadata(); // Get metadata
+            fs.renameSync(updatePath, download.getOriginalPath()); // Rename original file temporarily
+            await download.createMedia(); // Create new file
+            fs.unlinkSync(download.getOriginalPath()); // Delete original file
+        } else {
+            await new Download({
+                details,
+                logger,
+                directory,
+                mediaFilename,
+                trackQuality,
+                videoQuality,
+                coverFilename: config.coverFilename ? formatPath(config.coverFilename, details) : mediaFilename,
+                overwriteExisting: options.overwrite,
+                embedMetadata: options.metadata,
+                metadataEmbedder: config.metadataEmbedder,
+                keepCoverFile: config.coverFilename ? true : false,
+                getCover: options.cover,
+                getLyrics: options.lyrics,
+                syncedLyricsOnly: config.syncedLyricsOnly,
+                plainLyricsOnly: config.plainLyricsOnly,
+                externalLyrics: config.externalLyrics,
+                useArtistsTag: config.useArtistsTag,
+                artistTagSeparator: config.artistTagSeparator,
+                roleTagSeparator: config.roleTagSeparator,
+                customMetadata: config.customMetadata,
+                keepOriginalFile: config.debug ? true : false,
+                segmentWaitMin: config.segmentWaitMin,
+                segmentWaitMax: config.segmentWaitMax,
+                downloadLogPadding: config.downloadLogPadding,
+                useDolbyAtmos: config.useDolbyAtmos
+            }).download();
+        }
     }
 
     // logger.emptyLine();
