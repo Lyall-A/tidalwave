@@ -34,6 +34,14 @@
     "overwriteExisting": false,
     "segmentWaitMin": 50,
     "segmentWaitMax": 50,
+    "api": {
+        "enabled": false,
+        "port": 11034
+    },
+    "webUi": {
+        "enabled": false,
+        "port": 3688
+    },
 
     "ffmpegPath": "ffmpeg",
     "kid3CliPath": "kid3-cli",

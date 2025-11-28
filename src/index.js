@@ -40,6 +40,10 @@ const options = {
     lyrics: args.get('lyrics') ?? config.getLyrics,
     cover: args.get('cover') ?? config.getCover,
     overwrite: args.get('overwrite') ?? config.overwriteExisting,
+    api: args.get('api') ?? config.api.enabled,
+    apiPort: args.get('api-port') ?? config.api.port,
+    web: args.get('web') ?? config.webUi.enabled,
+    webPort: args.get('web-port') ?? config.webUi.port,
 };
 
 // Show help
