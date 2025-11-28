@@ -13,6 +13,8 @@ const Args = require('./utils/Args');
 const formatPath = require('./utils/formatPath');
 const Logger = require('./utils/Logger');
 const Download = require('./utils/Download');
+const API = require('./api');
+const WebUI = require('./web');
 
 const { config, secrets, secretsPath, argOptions, execDir, logger } = require('./globals');
 
@@ -47,7 +49,7 @@ const options = {
 };
 
 // Show help
-if (options.help || [
+if (options.help || ([
     ...options.tracks,
     ...options.albums,
     ...options.videos,
@@ -55,10 +57,24 @@ if (options.help || [
     ...options.playlists,
     ...options.searches,
     ...options.urls
-].length === 0) showHelp();
+].length === 0 &&
+    !options.api &&
+    !options.web
+)) showHelp();
 
 (async () => {
     await authorize();
+
+    if (options.api) {
+        logger.api('Starting API...');
+        const api = new API();
+    }
+    
+    if (options.web) {
+        if (!options.web) logger.error('API must be enabled to enable Web UI');
+        logger.web('Starting Web UI...');
+        const webUi = new WebUI();
+    }
 
     const tracks = [];
     const albums = [];
@@ -110,9 +126,8 @@ if (options.help || [
             logger.error(`Couldn't determine URL "${Logger.applyColor({ bold: true }, url)}"`, true, true);
         }
     }
-
-    // const startDate = Date.now();
-
+    
+    if (queue.length === 0) return;
     logger.emptyLine();
     logger.info(`Downloading ${Object.entries({
             track: queue.filter(item => item.track).length,
@@ -253,9 +268,6 @@ if (options.help || [
             }).download();
         }
     }
-
-    // logger.emptyLine();
-    // logger.info(`Finished in ${((Date.now() - startDate) / 1000 / 60).toFixed(2)} minute(s)`)
 
     async function addTrack(trackId) {
         const artists = [];

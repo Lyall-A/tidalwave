@@ -18,7 +18,15 @@ const secretsPath = config.secretsPath ? path.resolve(execDir, config.secretsPat
 const secrets = fs.existsSync(secretsPath) ? JSON.parse(fs.readFileSync(secretsPath)) : { };
 
 const logger = new Logger({
-    debugLogs: config.debug
+    debugLogs: config.debug,
+    levels: [
+        { name: 'INFO', id: 'info', prefix: '' },
+        { name: 'WARN', id: 'warn', fgColor: 'BRIGHT_YELLOW' },
+        { name: 'ERROR', id: 'error', fgColor: 'RED' },
+        { name: 'DEBUG', id: 'debug', fgColor: 'BRIGHT_BLACK' },
+        { name: 'API', id: 'api', fgColor: 'BRIGHT_MAGENTA' },
+        { name: 'WEB', id: 'web', fgColor: 'BRIGHT_CYAN' },
+    ]
 });
 
 module.exports = {
