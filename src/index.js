@@ -67,13 +67,17 @@ if (options.help || ([
 
     if (options.api) {
         logger.api('Starting API...');
-        const api = new API();
+        const api = new API({
+            port: options.apiPort
+        });
     }
     
     if (options.web) {
         if (!options.web) logger.error('API must be enabled to enable Web UI');
         logger.web('Starting Web UI...');
-        const webUi = new WebUI();
+        const webUi = new WebUI({
+            port: options.webPort
+        });
     }
 
     const tracks = [];
