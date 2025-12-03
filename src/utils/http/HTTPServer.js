@@ -1,19 +1,21 @@
-const { EventEmitter } = require('events');
 const http = require('http');
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
-
 const HTTPRouter = require('./HTTPRouter');
+const HTTPRequest = require('./HTTPRequest');
+const HTTPResponse = require('./HTTPResponse');
 
-class HTTPServer extends EventEmitter {
+class HTTPServer extends HTTPRouter {
     constructor(options = { }) {
-        super();
-
+        super(options.routerOptions);
+        
+        // Options
         this.ssl = options.ssl ?? false;
         this.port = options.port ?? (this.ssl ? 443 : 80);
         this.hostname = options.hostname ?? '0.0.0.0';
         
+        // Create server
         if (this.ssl) {
             this.server = https.createServer({
                 // TODO: certs
@@ -21,8 +23,17 @@ class HTTPServer extends EventEmitter {
         } else {
             this.server = http.createServer();
         }
+        
+        // Setup routing for server
+        this.addServer(this.server);
 
-        this.router = new HTTPRouter().addServer(this.server);
+        // Routes
+        this.any(null, (req, res, params, next) => {
+            // TODO: need to somehow pass the new req and res
+            const newReq = new HTTPRequest(req);
+            const newRes = new HTTPResponse(res);
+            next();
+        });
     }
 
     listen(port = this.port, hostname = this.hostname) {

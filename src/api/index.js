@@ -11,7 +11,11 @@ class API extends EventEmitter {
             port: this.port
         });
         
-        this.server.listen();
+        this.server.listen(); // for testing
+
+        this.server.get('/', (req, res) => {
+            console.log(req);
+        });
     }
 }
 
