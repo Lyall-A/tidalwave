@@ -66,18 +66,20 @@ if (options.help || ([
     await authorize();
 
     if (options.api) {
+        // Start API
         logger.api('Starting API...');
-        const api = new API({
-            port: options.apiPort
-        });
+        const api = new API();
+        await api.listen(options.apiPort);
+        logger.api(`API listening at :${options.apiPort}`, true);
     }
     
     if (options.web) {
+        // Start Web UI
         if (!options.web) logger.error('API must be enabled to enable Web UI');
         logger.web('Starting Web UI...');
-        const webUi = new WebUI({
-            port: options.webPort
-        });
+        const webUi = new WebUI();
+        await webUi.listen(options.webPort);
+        logger.web(`Web UI listening at :${options.webPort}`, true);
     }
 
     const tracks = [];

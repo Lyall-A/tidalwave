@@ -1,20 +1,11 @@
-const { EventEmitter } = require('events');
 const HTTPServer = require('../utils/http/HTTPServer');
 
-class API extends EventEmitter {
+class API extends HTTPServer {
     constructor(options = { }) {
         super();
 
-        this.port = options.port;
-
-        this.server = new HTTPServer({
-            port: this.port
-        });
-        
-        this.server.listen(); // for testing
-
-        this.server.get('/', (req, res) => {
-            console.log(req);
+        this.get('/', (req, res) => {
+            res.send('hello world', 'text/plain');
         });
     }
 }

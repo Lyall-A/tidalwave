@@ -1,3 +1,5 @@
+const { IncomingMessage, ServerResponse } = require('http');
+
 class HTTPRouter {
     routes = [ ];
 
@@ -20,8 +22,10 @@ class HTTPRouter {
             if (!next) break;
         }
     }
-
-    createRouteFunction = (method) => {
+    createRouteFunction = (method) => { 
+        /**
+         * @param {(req: IncomingMessage, res: ServerResponse) => void} callback
+         */
         return (path, callback) => {
             this.routes.push({
                 method,
@@ -33,7 +37,7 @@ class HTTPRouter {
 
     findRoutes = (method, url) => {
         // TODO: params and wildcard stuff
-        let path = url.match(/[^?]*[^/?]/)?.[0] || '/';
+        let path = url.match(/\/[^?]*[^/?]/)?.[0] || '/';
         if (this.singleSlash) path = path.replace(/\/{2,}/g, '/');
 
         const routes = this.routes.filter(route => {

@@ -29,9 +29,9 @@ class HTTPServer extends HTTPRouter {
 
         // Routes
         this.any(null, (req, res, params, next) => {
-            // TODO: need to somehow pass the new req and res
-            const newReq = new HTTPRequest(req);
-            const newRes = new HTTPResponse(res);
+            // Update request and response
+            HTTPRequest.assign(req);
+            HTTPResponse.assign(res);
             next();
         });
     }
