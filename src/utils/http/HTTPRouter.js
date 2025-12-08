@@ -36,7 +36,7 @@ class HTTPRouter {
     }
 
     findRoutes = (method, url) => {
-        // TODO: params and wildcard stuff
+        // TODO: params and wildcard stuff, also add a way to automatically route any files in an entire directory
         let path = url.match(/\/[^?]*[^/?]/)?.[0] || '/';
         if (this.singleSlash) path = path.replace(/\/{2,}/g, '/');
 

@@ -1,5 +1,8 @@
 const { ServerResponse } = require('http');
+const path = require('path')
 const fs = require('fs');
+
+const mimeTypes = require('./mimeTypes');
 
 class HTTPResponse {
     /**
@@ -10,14 +13,14 @@ class HTTPResponse {
     }
 
     send = (data, contentType) => {
-        this._raw.writeHead(200, { 'Content-Type': contentType });
+        this._raw.writeHead(200, { 'Content-Type': contentType || 'text/plain' });
         this._raw.end(data);
     }
 
     sendFile = (file, contentType) => {
         const readStream = fs.createReadStream(file);
         
-        this._raw.writeHead(200, { 'Content-Type': contentType });
+        this._raw.writeHead(200, { 'Content-Type': contentType || mimeTypes[path.extname(file)] || 'application/octet-stream' });
         
         readStream.on('data', data => {
             this._raw.write(data);
