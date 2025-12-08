@@ -6,6 +6,7 @@ class HTTPRouter {
     constructor(options = { }) {        
         this.singleSlash = options.singleSlash ?? true;
         this.caseSensitive = options.caseSensitive ?? true;
+        this.path = options.path;
     }
 
     addServer = (server) => {
@@ -29,7 +30,7 @@ class HTTPRouter {
         return (path, callback) => {
             this.routes.push({
                 method,
-                path,
+                path: path,
                 callback
             });
         }
@@ -42,7 +43,10 @@ class HTTPRouter {
 
         const routes = this.routes.filter(route => {
             if (route.method && route.method !== method) return;
-            if (route.path && route.path !== path) return;
+            if (route.path && (
+                route.path !== '*' && // TODO
+                route.path !== path
+            )) return;
             return true;
         });
 

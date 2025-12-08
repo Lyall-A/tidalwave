@@ -1,6 +1,6 @@
 const http = require('http');
 const https = require('https');
-const fs = require('fs');
+const fs = require('fs/promises');
 const path = require('path');
 const HTTPRouter = require('./HTTPRouter');
 const HTTPRequest = require('./HTTPRequest');
@@ -33,6 +33,23 @@ class HTTPServer extends HTTPRouter {
             HTTPRequest.assign(req);
             HTTPResponse.assign(res);
             next();
+        });
+    }
+
+    routeDirectory = (dir) => {
+        this.get('*', async (req, res) => {
+            const filePath = path.join(dir, req.path);
+            try {
+                const stat = await fs.stat(filePath);
+                if (stat.isFile()) {
+                    res.sendFile(filePath);
+                } else if (stat.isDirectory()) {
+                    res.sendFile(path.join(filePath, 'index.html'));
+                }
+            } catch (err) {
+                // TODO: 404
+                res.send('404');
+            }
         });
     }
 
