@@ -91,16 +91,17 @@ if (options.help || [
 
     // URLS
     for (const url of options.urls) {
-        const match = url.match(/tidal\.com.*\/(track|album|video|artist|playlist)\/(\d+)/i);
+        const match = url.match(/tidal\.com.*\/(track|album|video|artist|playlist)\/([0-9a-f-]+)/i);
         if (match) {
             const type = match[1].toLowerCase();
             const id = parseInt(match[2], 10);
+            const uuid = match[2];
             
             if (type === 'track') await addTrack(id); else
             if (type === 'album') await addAlbum(id); else
             if (type === 'video') await addVideo(id); else
             if (type === 'artist') await addArtist(id); else
-            if (type === 'playlist') await addPlaylist(id); else
+            if (type === 'playlist') await addPlaylist(uuid); else
             logger.error(`Unknown type "${Logger.applyColor({ bold: true }, type)}"`, true, true); // NOTE: not possible with current regex
         } else {
             logger.error(`Couldn't determine URL "${Logger.applyColor({ bold: true }, url)}"`, true, true);
