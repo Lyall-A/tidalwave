@@ -263,9 +263,9 @@ if (options.help || [
 
             if (track.upload && !config.allowUserUploads) throw new Error('User uploads are disabled');
 
-            const album = await findAlbum(track.album.id);
-            for (const artist of track.artists) artists.push(await findArtist(artist.id));
-            for (const artist of album.artists) albumArtists.push(await findArtist(artist.id));
+            const album = await findAlbum(track.album.id, track.album);
+            for (const artist of track.artists) artists.push(await findArtist(artist.id, artist));
+            for (const artist of album.artists) albumArtists.push(await findArtist(artist.id, artist));
 
             queue.push({
                 track,
@@ -294,8 +294,8 @@ if (options.help || [
                 const artists = [];
                 const albumArtists = [];
 
-                for (const artist of track.artists) artists.push(await findArtist(artist.id));
-                for (const artist of album.artists) albumArtists.push(await findArtist(artist.id));
+                for (const artist of track.artists) artists.push(await findArtist(artist.id, artist));
+                for (const artist of album.artists) albumArtists.push(await findArtist(artist.id, artist));
 
                 queue.push({
                     track,
@@ -334,18 +334,18 @@ if (options.help || [
         try {
             const artist = await findArtist(artistId);
 
-            for (const { id: albumId } of artist.albums) {
+            for (const partialAlbum of artist.albums) {
                 const tracks = [];
 
-                const album = await findAlbum(albumId);
-                for (const track of album.tracks) tracks.push(await findTrack(track.id));
+                const album = await findAlbum(partialAlbum.id, partialAlbum);
+                for (const track of album.tracks) tracks.push(await findTrack(track.id, track));
 
                 for (const track of tracks) {
                     const artists = [];
                     const albumArtists = [];
 
-                    for (const artist of track.artists) artists.push(await findArtist(artist.id));
-                    for (const artist of album.artists) albumArtists.push(await findArtist(artist.id));
+                    for (const artist of track.artists) artists.push(await findArtist(artist.id, artist));
+                    for (const artist of album.artists) albumArtists.push(await findArtist(artist.id, artist));
 
                     queue.push({
                         track,
@@ -371,9 +371,9 @@ if (options.help || [
                 const artists = [];
                 const albumArtists = [];
 
-                const album = await findAlbum(track.album.id);
-                for (const artist of track.artists) artists.push(await findArtist(artist.id));
-                for (const artist of album.artists) albumArtists.push(await findArtist(artist.id));
+                const album = await findAlbum(track.album.id, track.album);
+                for (const artist of track.artists) artists.push(await findArtist(artist.id, artist));
+                for (const artist of album.artists) albumArtists.push(await findArtist(artist.id, artist));
 
                 queue.push({
                     track,
@@ -390,29 +390,37 @@ if (options.help || [
         }
     }
 
-    async function findTrack(trackId) {
+    async function findTrack(trackId, partialData) {
         const foundTrack = tracks.find(track => track.id === trackId);
         if (foundTrack) {
             logger.debug(`Found already fetched track: ${trackId}`);
             return foundTrack;
         } else {
             logger.info(`Getting information about track: ${Logger.applyColor({ bold: true }, trackId)}`, true);
-            // debug(`Fetching track: ${trackId}`);
-            const track = await getTrack(trackId);
+            const track = await getTrack(trackId).catch(err => {
+                if (partialData && config.partialDataFallback) {
+                    logger.warn(`Failed to get track ${Logger.applyColor({ bold: true }, trackId)}, some information may be missing!`, true, true);
+                    return partialData;
+                } else throw err;
+            });
             tracks.push(track);
             return track;
         }
     }
 
-    async function findAlbum(albumId) {
+    async function findAlbum(albumId, partialData) {
         const foundAlbum = albums.find(album => album.id === albumId);
         if (foundAlbum) {
             logger.debug(`Found already fetched album: ${albumId}`);
             return foundAlbum;
         } else {
             logger.info(`Getting information about album: ${Logger.applyColor({ bold: true }, albumId)}`, true);
-            // debug(`Fetching album: ${albumId}`);
-            const album = await getAlbum(albumId);
+            const album = await getAlbum(albumId).catch(err => {
+                if (partialData && config.partialDataFallback) {
+                    logger.warn(`Failed to get album ${Logger.applyColor({ bold: true }, albumId)}, some information may be missing!`, true, true);
+                    return partialData;
+                } else throw err;
+            });
             albums.push(album);
             return album;
         }
@@ -431,15 +439,19 @@ if (options.help || [
         }
     }
 
-    async function findArtist(artistId) {
+    async function findArtist(artistId, partialData) {
         const foundArtist = artists.find(artist => artist.id === artistId);
         if (foundArtist) {
             logger.debug(`Found already fetched artist: ${artistId}`);
             return foundArtist;
         } else {
             logger.info(`Getting information about artist: ${Logger.applyColor({ bold: true }, artistId)}`, true);
-            // debug(`Fetching artist: ${artistId}`);
-            const artist = await getArtist(artistId);
+            const artist = await getArtist(artistId).catch(err => {
+                if (partialData && config.partialDataFallback) {
+                    logger.warn(`Failed to get artist ${Logger.applyColor({ bold: true }, artistId)}, some information may be missing!`, true, true);
+                    return partialData;
+                } else throw err;
+            });
             artists.push(artist);
             return artist;
         }
