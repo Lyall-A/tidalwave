@@ -40,6 +40,7 @@ class Download {
         this.segmentWaitMin = options.segmentWaitMin ?? 0;
         this.segmentWaitMax = options.segmentWaitMax ?? 0;
         this.downloadLogPadding = options.downloadLogPadding ?? 0;
+        this.logPrefix = options.logPrefix;
         this.useDolbyAtmos = options.useDolbyAtmos ?? false;
 
         this.playbackInfo = options.playbackInfo;
@@ -248,7 +249,7 @@ class Download {
 
     log(msg, level) {
         const levelPrefix = this.logger.getLevel(level)?.prefix;
-        const logPrefix = `Downloading ${Logger.applyColor({ bold: true }, this.details.title)} - ${Logger.applyColor({ bold: true }, this.details.artist.name)}: `;
+        const logPrefix = this.logPrefix || `Downloading ${Logger.applyColor({ bold: true }, this.details.title)} - ${Logger.applyColor({ bold: true }, this.details.artist.name)}: `;
         const padding = ' '.repeat(Math.max(this.downloadLogPadding - Logger.getDisplayedLength(`${levelPrefix || ''}${logPrefix}`), 0));
         const log = `${logPrefix}${padding}${msg}`;
         if (level) {

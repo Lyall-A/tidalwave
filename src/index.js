@@ -193,6 +193,7 @@ if (options.help || [
             const updatePathFilename = path.basename(updatePath, updatePathExtension);
 
             const download = new Download({
+                // Update item
                 details,
                 logger,
                 directory: updatePathDirectory,
@@ -211,6 +212,7 @@ if (options.help || [
                 roleTagSeparator: config.roleTagSeparator,
                 customMetadata: config.customMetadata,
                 downloadLogPadding: config.downloadLogPadding,
+                logPrefix: `${Logger.applyColor({ bold: true }, `[${itemIndex + 1} / ${queue.length}]`)} Updating ${Logger.applyColor({ bold: true }, details.title)} - ${Logger.applyColor({ bold: true }, details.artist.name)}: `,
 
                 originalExtension: updatePathExtension,
                 mediaExtension: updatePathExtension,
@@ -221,6 +223,7 @@ if (options.help || [
             await download.createMedia(); // Create new file
             fs.unlinkSync(download.getOriginalPath()); // Delete original file
         } else {
+            // Download item
             await new Download({
                 details,
                 logger,
@@ -246,6 +249,7 @@ if (options.help || [
                 segmentWaitMin: config.segmentWaitMin,
                 segmentWaitMax: config.segmentWaitMax,
                 downloadLogPadding: config.downloadLogPadding,
+                logPrefix: `${Logger.applyColor({ bold: true }, `[${itemIndex + 1} / ${queue.length}]`)} Downloading ${Logger.applyColor({ bold: true }, details.title)} - ${Logger.applyColor({ bold: true }, details.artist.name)}: `,
                 useDolbyAtmos: config.useDolbyAtmos
             }).download();
         }
@@ -508,7 +512,7 @@ async function authorize() {
 
 async function authorizeWithDeviceAuthorization(params = {}) {
     const deviceAuthorization = await requestDeviceAuthorization(params.clientId, params.scope);
-    logger.info(`To authenticate, please visit https://${deviceAuthorization.verificationUriComplete}`);
+    logger.info(`Please visit ${Logger.applyColor({ bold: true }, `https://${deviceAuthorization.verificationUriComplete || `${deviceAuthorization.verificationUri || 'link.tidal.com'}/${deviceAuthorization.userCode}`}`)} to log in to your TIDAL account.\nWaiting for authorization...`);
 
     const deviceAuthorizationStart = Date.now();
     const token = await new Promise((resolve, reject) => {
