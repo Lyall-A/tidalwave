@@ -18,7 +18,15 @@ const secretsPath = config.secretsPath ? path.resolve(execDir, config.secretsPat
 const secrets = fs.existsSync(secretsPath) ? JSON.parse(fs.readFileSync(secretsPath)) : { };
 
 const logger = new Logger({
-    debugLogs: config.debug
+    debugLogs: config.debug,
+    levels: [
+        { name: 'INFO', id: 'info', prefix: '' },
+        { name: 'WARN', id: 'warn', fgColor: 'BRIGHT_YELLOW' },
+        { name: 'ERROR', id: 'error', fgColor: 'RED' },
+        { name: 'DEBUG', id: 'debug', fgColor: 'BRIGHT_BLACK' },
+        { name: 'API', id: 'api', fgColor: 'BRIGHT_MAGENTA' },
+        { name: 'WEB', id: 'web', fgColor: 'BRIGHT_CYAN' },
+    ]
 });
 
 module.exports = {
@@ -49,7 +57,11 @@ module.exports = {
         { name: 'metadata', shortName: 'md', type: 'bool', description: 'Enables or disables all metadata embedding', valueDescription: 'yes|no' },
         { name: 'lyrics', shortName: 'l', type: 'bool', description: 'Enables or disables lyrics embedding', valueDescription: 'yes|no' },
         { name: 'cover', shortName: 'c', type: 'bool', description: 'Enables or disables cover embedding', valueDescription: 'yes|no' },
-        { name: 'overwrite', shortName: 'ow', type: 'bool', description: 'Enables or disables overwriting for existing downloads', valueDescription: 'yes|no' }
+        { name: 'overwrite', shortName: 'ow', type: 'bool', description: 'Enables or disables overwriting for existing downloads', valueDescription: 'yes|no' },
+        { name: 'api', type: 'bool', description: 'Enables or disables the API', valueDescription: 'yes|no' },
+        { name: 'api-port', type: 'int', description: 'Sets the port used for the API', valueDescription: 'port' },
+        { name: 'web', type: 'bool', description: 'Enables or disables the Web UI', valueDescription: 'yes|no' },
+        { name: 'web-port', type: 'int', description: 'Sets the port used for the Web UI', valueDescription: 'port' },
     ],
     tidalVideoCoverSizes: {
         '640': '640x640',
