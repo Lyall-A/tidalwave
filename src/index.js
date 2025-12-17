@@ -14,11 +14,21 @@ const formatPath = require('./utils/formatPath');
 const Logger = require('./utils/Logger');
 const Download = require('./utils/Download');
 
-const { config, secrets, secretsPath, argOptions, execDir, logger } = require('./globals');
+const {
+    config,
+    secrets,
+    secretsPath,
+    argOptions,
+    execDir,
+    logger,
+    tidalTrackQualities,
+    tidalVideoQualities
+} = require('./globals');
 
 const args = new Args(process.argv, argOptions);
 const options = {
     help: args.get('help'),
+
     tracks: args.getAll('track'),
     albums: args.getAll('album'),
     videos: args.getAll('video'),
@@ -34,13 +44,16 @@ const options = {
     ],
     urls: args.getAll('url'),
     updates: args.getAll('update'),
-    trackQuality: (args.get('track-quality') ?? config.trackQuality)?.toLowerCase(),
-    videoQuality: (args.get('video-quality') ?? config.videoQuality)?.toLowerCase(),
+    
+    trackQuality: (args.get('track-quality') ?? config.trackQuality)?.toUpperCase(),
+    videoQuality: (args.get('video-quality') ?? config.videoQuality)?.toUpperCase(),
+    dolbyAtmos: args.get('dolby-atmos') ?? config.useDolbyAtmos,
     metadata: args.get('metadata') ?? config.embedMetadata,
     lyrics: args.get('lyrics') ?? config.getLyrics,
     cover: args.get('cover') ?? config.getCover,
     overwrite: args.get('overwrite') ?? config.overwriteExisting,
 };
+logger.debug(`Options:\n${JSON.stringify(options, null, 4)}`);
 
 // Show help
 if (options.help || [
@@ -150,8 +163,8 @@ if (options.help || [
                 item.video ? item.video.title :
                 null,
             cover:
-                item.album ? item.album.covers[config.trackCoverSize] || item.album.covers['1280'] :
-                item.video ? item.video.images[config.videoCoverSize] || item.video.images['1280x720'] :
+                item.album ? item.album.covers[config.trackCoverSize?.toUpperCase()] || item.album.covers['1280'] :
+                item.video ? item.video.images[config.videoCoverSize?.toUpperCase()] || item.video.images['1280x720'] :
                 null,
             url:
                 item.album ? `https://tidal.com/album/${item.album.id}` :
@@ -173,18 +186,6 @@ if (options.help || [
 
         const directory = path.resolve(execDir, formatPath(details.isTrack ? config.albumDirectory : config.videoDirectory, details));
         const mediaFilename = formatPath(details.isTrack ? config.trackFilename : config.videoFilename, details);
-
-        const trackQuality =
-            options.trackQuality === 'low' ? 'HIGH' :
-            options.trackQuality === 'high' ? 'LOSSLESS' :
-            options.trackQuality === 'max' ? 'HI_RES_LOSSLESS' :
-            options.trackQuality?.toUpperCase();
-
-        const videoQuality =
-            options.videoQuality === 'low' ? '480' :
-            options.videoQuality === 'high' ? '720' :
-            options.videoQuality === 'max' ? null :
-            options.videoQuality;
         
         if (options.updates[itemIndex]) {
             const updatePath = path.resolve(execDir, options.updates[itemIndex]);
@@ -229,8 +230,8 @@ if (options.help || [
                 logger,
                 directory,
                 mediaFilename,
-                trackQuality,
-                videoQuality,
+                trackQuality: tidalTrackQualities[options.trackQuality] ?? options.trackQuality,
+                videoQuality: tidalVideoQualities[options.videoQuality] ?? options.videoQuality,
                 coverFilename: config.coverFilename ? formatPath(config.coverFilename, details) : mediaFilename,
                 overwriteExisting: options.overwrite,
                 embedMetadata: options.metadata,
@@ -250,7 +251,7 @@ if (options.help || [
                 segmentWaitMax: config.segmentWaitMax,
                 downloadLogPadding: config.downloadLogPadding,
                 logPrefix: `${Logger.applyColor({ bold: true }, `[${itemIndex + 1} / ${queue.length}]`)} Downloading ${Logger.applyColor({ bold: true }, details.title)} - ${Logger.applyColor({ bold: true }, details.artist.name)}: `,
-                useDolbyAtmos: config.useDolbyAtmos
+                useDolbyAtmos: options.dolbyAtmos
             }).download();
         }
     }
@@ -562,7 +563,12 @@ Options:
     .filter(i => i)
     .join(', ')}\
 ${arg.valueDescription ? ` <${arg.valueDescription}>` : ''}`.padEnd(60 - 1, ' ')} \
-${arg.description || 'No description...'}`).join('\n  ')}
+${arg.description || 'No description...'}\
+${(arg.default !== undefined && arg.default !== null) ? ` - Default: ${
+    arg.default === true ? 'yes' :
+    arg.default === false ? 'no' :
+    arg.default
+}` : ''}`).join('\n  ')}
 `.trim());
 
     process.exit(0);

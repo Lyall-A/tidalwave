@@ -17,7 +17,7 @@ class Args {
             if (!options) return;
 
             const value = argv[argIndex + 1];
-            if (!options.noValue && !value) return;
+            if (!value && !options.noValue) return;
 
             const parsedValue =
                 options.noValue ? true :
@@ -25,7 +25,7 @@ class Args {
                 options.type === 'float' ? parseFloat(value) :
                 options.type === 'bool' ? ['yes', 'true', '1'].includes(value.toLowerCase()) :
                 value;
-
+            
             this.args.push({
                 name: options.name,
                 value: parsedValue,
@@ -35,11 +35,11 @@ class Args {
     }
 
     get(name) {
-        return this.args.find(arg => arg.name === name)?.value;
+        return this.getAll(name)[0];
     }
 
     getAll(name) {
-        return this.args.filter(arg => arg.name === name).map(arg => arg.value);
+        return this.args.filter(arg => arg.name === name).map(arg => arg.value ?? arg.default);
     }
 }
 

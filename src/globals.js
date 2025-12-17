@@ -31,43 +31,57 @@ module.exports = {
     logger,
     argOptions: [
         { name: 'help', shortName: 'h', noValue: true, description: 'Displays this menu' },
-        { name: 'track', shortName: 't', type: 'int', description: 'Downloads track', valueDescription: 'track-id' },
-        { name: 'album', shortName: 'm', type: 'int', description: 'Downloads album', valueDescription: 'album-id' },
-        { name: 'video', shortName: 'v', description: 'Downloads videos', valueDescription: 'video-id' },
-        { name: 'artist', shortName: 'a', type: 'int', description: 'Downloads artist discography', valueDescription: 'artist-id' },
-        { name: 'playlist', shortName: 'p', description: 'Downloads items from playlist', valueDescription: 'playlist-uuid' },
-        { name: 'search', shortName: 's', description: 'Downloads top search result', valueDescription: 'query' },
-        { name: 'search:track', shortName: 's:t', description: 'Downloads top search result for tracks', valueDescription: 'query' },
-        { name: 'search:album', shortName: 's:m', description: 'Downloads top search result for albums', valueDescription: 'query' },
-        { name: 'search:video', shortName: 's:v', description: 'Downloads top search result for videos', valueDescription: 'query' },
-        { name: 'search:artist', shortName: 's:a', description: 'Downloads top search result for artists', valueDescription: 'query' },
-        { name: 'search:playlist', shortName: 's:p', description: 'Downloads top search result for playlists', valueDescription: 'query' },
-        { name: 'url', shortName: 'u', description: 'Download from URL', valueDescription: 'url' },
-        { name: 'update', description: 'Update an existing file with metadata from TIDAL, without downloading', valueDescription: 'path' },
-        { name: 'track-quality', shortName: 'tq', aliases: ['quality'], shortAliases: ['q'], description: 'Sets track download quality', valueDescription: 'low|high|max' },
-        { name: 'video-quality', shortName: 'vq', description: 'Sets video download quality', valueDescription: 'low|high|max|<height>' },
-        { name: 'metadata', shortName: 'md', type: 'bool', description: 'Enables or disables all metadata embedding', valueDescription: 'yes|no' },
-        { name: 'lyrics', shortName: 'l', type: 'bool', description: 'Enables or disables lyrics embedding', valueDescription: 'yes|no' },
-        { name: 'cover', shortName: 'c', type: 'bool', description: 'Enables or disables cover embedding', valueDescription: 'yes|no' },
-        { name: 'overwrite', shortName: 'ow', type: 'bool', description: 'Enables or disables overwriting for existing downloads', valueDescription: 'yes|no' }
+
+        { name: 'track', shortName: 't', type: 'int', description: 'Download a track ID', valueDescription: 'track-id' },
+        { name: 'album', shortName: 'm', type: 'int', description: 'Download a album ID', valueDescription: 'album-id' },
+        { name: 'video', shortName: 'v', description: 'Download a video ID', valueDescription: 'video-id' },
+        { name: 'artist', shortName: 'a', type: 'int', description: 'Download an artist ID\'s discography', valueDescription: 'artist-id' },
+        { name: 'playlist', shortName: 'p', description: 'Download all items from a playlist UUID', valueDescription: 'playlist-uuid' },
+        { name: 'search', shortName: 's', description: 'Download top search', valueDescription: 'query' },
+        { name: 'search:track', shortName: 's:t', description: 'Download top search for a track', valueDescription: 'query' },
+        { name: 'search:album', shortName: 's:m', description: 'Download top search for a album', valueDescription: 'query' },
+        { name: 'search:video', shortName: 's:v', description: 'Download top search for a video', valueDescription: 'query' },
+        { name: 'search:artist', shortName: 's:a', description: 'Download top search for a artist', valueDescription: 'query' },
+        { name: 'search:playlist', shortName: 's:p', description: 'Download top search for a playlist', valueDescription: 'query' },
+        { name: 'url', shortName: 'u', description: 'Download from a TIDAL URL', valueDescription: 'url' },
+        { name: 'update', description: 'Update an existing file with metadata from TIDAL', valueDescription: 'path' },
+
+        { name: 'track-quality', shortName: 'tq', aliases: ['quality'], shortAliases: ['q'], description: 'Track download quality', valueDescription: 'low|high|max', default: config.trackQuality },
+        { name: 'video-quality', shortName: 'vq', description: 'Video download quality', valueDescription: 'low|high|max|<height>', default: config.videoQuality },
+        { name: 'dolby-atmos', shortName: 'da', type: 'bool', description: 'Downloads in immersive audio when available. Requires a token from a mobile device', valueDescription: 'yes|no', default: config.useDolbyAtmos },
+        { name: 'metadata', shortName: 'md', type: 'bool', description: 'Embed metadata to download', valueDescription: 'yes|no', default: config.embedMetadata },
+        { name: 'lyrics', shortName: 'l', type: 'bool', description: 'Download lyrics if available', valueDescription: 'yes|no', default: config.getLyrics },
+        { name: 'cover', shortName: 'c', type: 'bool', description: 'Download cover art', valueDescription: 'yes|no', default: config.getCover },
+        { name: 'overwrite', shortName: 'ow', type: 'bool', description: 'Overwrite existing downloads', valueDescription: 'yes|no', default: config.overwriteExisting }
     ],
+    tidalTrackQualities: {
+        'LOW': 'HIGH',
+        'HIGH': 'LOSSLESS',
+        'MAX': 'HI_RES_LOSSLESS'
+    },
+    tidalVideoQualities: {
+        'LOW': '480',
+        'MEDIUM': '720',
+        'HIGH': '1080',
+        'MAX': null
+    },
     tidalVideoCoverSizes: {
         '640': '640x640',
         '1280': '1280x1280',
         '1280x720': '1280x720',
         '640x360': '640x360',
-        'original': 'origin'
+        'ORIGINAL': 'origin'
     },
     tidalAlbumCoverSizes: {
         '640': '640x640',
         '1280': '1280x1280',
-        'original': 'origin'
+        'ORIGINAL': 'origin'
     },
     tidalArtistPictureSizes: {
-        'original': 'origin'
+        'ORIGINAL': 'origin'
     },
     tidalPlaylistImageSizes: {
-        'original': 'origin'
+        'ORIGINAL': 'origin'
     },
     tidalCredits: [
         // NOTE: found from searching various albums and tracks, theres definitely more

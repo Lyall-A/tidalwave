@@ -13,7 +13,6 @@ const formatString = require('./formatString');
 const normalizeTag = require('./normalizeTag');
 const capitalize = require('./capitalize');
 
-// TODO: parse low/high/max quality types here instead of main and set default
 class Download {
     constructor(options = { }) {
         this.details = options.details;
