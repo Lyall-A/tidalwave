@@ -10,7 +10,7 @@ function parsePlaylist(playlist, additional = { }) {
         duration: playlist.duration,
         images: playlist.squareImage && Object.fromEntries(Object.entries(tidalPlaylistImageSizes).map(([name, size]) => [name, `${config.resourcesBaseUrl}/images/${playlist.squareImage.replace(/-/g, '/')}/${size}.jpg`])) || undefined,
         // image: playlist.squareImage && `${config.resourcesBaseUrl}/images/${playlist.squareImage.replace(/-/g, '/')}/origin.jpg` || undefined,
-        customImage: playlist.customImageUrl,
+        customImage: playlist.customImageUrl, // not used even with custom images?
         trackCount: playlist.numberOfTracks,
         sharing: playlist.sharingLevel,
         created: playlist.created,

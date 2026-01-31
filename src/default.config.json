@@ -1,11 +1,25 @@
 {
-    "_version": 3,
-    "albumDirectory": "./Downloads/{{albumArtist.name}}/{{album.title}} ({{releaseYear}})",
-    "trackFilename": "{{artist.name}} - {{album.title}} - {{title}} - {{trackNumberPadded}}",
-    "videoDirectory": "./Downloads/{{artist.name}}/{{title}} ({{releaseYear}})",
-    "videoFilename": "{{artist.name}} - {{title}}",
+    "_version": 4,
+    "defaultTypeOptions": {
+        "directory": "./Downloads/{{albumArtist.name}}/{{album.title}} ({{releaseYear}})",
+        "filename": "{{artist.name}} - {{album.title}} - {{title}} - {{trackNumberPadded}}",
+        "coverFilename": "cover"
+    },
+    "typeOptions": {
+        "video": {
+            "directory": "./Downloads/{{artist.name}}/{{title}} ({{releaseYear}})",
+            "filename": "{{artist.name}} - {{title}}"
+        },
+        "playlist": {
+            "directory": "./Downloads/Playlists/{{playlist.title}}",
+            "filename": "{{playlistItemNum}} - {{artist.name}} - {{title}}",
+            "coverFilename": null
+        }
+    },
     "trackQuality": "MAX",
     "videoQuality": "MAX",
+    "playlistCoverFilename": "cover",
+    "createPlaylistFile": true,
     "useDolbyAtmos": false,
     "getLyrics": true,
     "syncedLyricsOnly": false,
@@ -18,9 +32,9 @@
     "allowUserUploads": false,
     "partialDataFallback": true,
     "getCover": true,
-    "coverFilename": "cover",
     "trackCoverSize": "1280",
     "videoCoverSize": "1280x720",
+    "playlistCoverSize": "ORIGINAL",
     "customMetadata": [
         ["comment", "Downloaded from TIDAL: {{url}}"],
         ["source", "TIDAL"],

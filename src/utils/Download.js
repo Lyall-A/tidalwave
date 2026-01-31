@@ -19,12 +19,14 @@ class Download {
         this.logger = options.logger;
         this.directory = options.directory;
         this.mediaFilename = options.mediaFilename;
+        this.coverFilename = options.coverFilename ?? 'cover';
+        this.playlistCoverFilename = options.playlistCoverFilename;
         this.trackQuality = options.trackQuality;
         this.videoQuality = options.videoQuality;
-        this.coverFilename = options.coverFilename ?? 'cover';
         this.overwriteExisting = options.overwriteExisting ?? false;
         this.embedMetadata = options.embedMetadata ?? true;
         this.metadataEmbedder = options.metadataEmbedder ?? 'ffmpeg';
+        this.createPlaylistFile = options.createPlaylistFile ?? true;
         this.keepCoverFile = options.keepCoverFile ?? true;
         this.getCover = options.getCover ?? true;
         this.getLyrics = options.getLyrics ?? true;
@@ -57,6 +59,7 @@ class Download {
         this.logger.lastLog = '';
 
         fs.mkdirSync(this.directory, { recursive: true }); // Create directory
+        if (this.details.playlist) await this.createPlaylist(); // Create playlist info (.m3u8 and cover)
         await this.getSegments(); // Get segment URL's
         if (fs.existsSync(this.getMediaPath()) && !this.overwriteExisting) return this.log('Already downloaded!'); // Check if already downloaded
         await this.downloadSegments(); // Download segments
@@ -66,6 +69,27 @@ class Download {
         if (!this.keepCoverFile && fs.existsSync(this.getCoverPath())) fs.unlinkSync(this.getCoverPath()); // Delete cover file
 
         this.log(`Completed (${Math.floor((Date.now() - startDate) / 1000)}s)`);
+    }
+
+    async createPlaylist() {
+        // Download playlist cover
+        if (this.getCover && !fs.existsSync(this.getPlaylistCoverPath())) {
+            this.log('Downloading playlist cover...');
+            await fetch(this.details.playlistCover).then(async res => {
+                if (res.status !== 200) throw new Error(`Got status code ${res.status}`);
+                const coverBuffer = Buffer.from(await res.arrayBuffer());
+                fs.writeFileSync(this.getPlaylistCoverPath(), coverBuffer);
+            }).catch(err => {
+                this.log(`Failed to download playlist cover: ${err.message}`, 'error');
+            });
+        } else {
+            this.log('Playlist cover already downladed');
+        }
+
+        // Create playlist .m3u8 file
+        if (this.createPlaylistFile && !fs.existsSync(this.getPlaylistFilePath())) {
+            fs.writeFileSync(this.getPlaylistFilePath(), '#EXTM3U\r\n');
+        }
     }
 
     async getSegments() {
@@ -132,6 +156,11 @@ class Download {
             });
         } else {
             this.log('Cover already downladed');
+        }
+
+        // Add to M3U playlist
+        if (this.createPlaylistFile && fs.existsSync(this.getPlaylistFilePath())) {
+            fs.appendFileSync(this.getPlaylistFilePath(), `#EXTINF:${this.details.duration},${this.details.artists.map(artist => artist.name).join(', ')} - ${this.details.title}\r\n${path.basename(this.getMediaPath())}\r\n`);
         }
 
         // Metadata
@@ -244,6 +273,14 @@ class Download {
 
     getLyricsPath() {
         return path.join(this.directory, `${this.mediaFilename}.lrc`);
+    }
+
+    getPlaylistFilePath() {
+        return path.join(this.directory, 'playlist.m3u8');
+    }
+
+    getPlaylistCoverPath() {
+        return path.join(this.directory, `${this.playlistCoverFilename}${this.coverExtension}`);
     }
 
     log(msg, level) {

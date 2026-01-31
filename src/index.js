@@ -142,10 +142,14 @@ if (options.help || [
             artists: item.artists,
             albumArtists: item.albumArtists,
             playlist: item.playlist,
+            trackIndex: item.trackIndex, // used for playlists
             
             artist: item.artists?.[0],
             albumArtist: item.albumArtists?.[0],
             trackNumberPadded: item.track?.trackNumber?.toString().padStart(2, '0'), // TODO: maybe remove this and add a padding function in formatString?
+            queueNum: itemIndex + 1,
+            playlistItemNum: item.trackIndex + 1,
+            playlistCover: item.playlist ? item.playlist.images[config.playlistCoverSize?.toUpperCase()] || item.playlist.images['ORIGINAL'] : null,
             isTrack: item.track ? true : false,
             isVideo: item.video ? true : false,
 
@@ -161,6 +165,10 @@ if (options.help || [
             title:
                 item.track ? item.track.fullTitle :
                 item.video ? item.video.title :
+                null,
+            duration:
+                item.track ? item.track.duration :
+                item.video ? item.video.duration :
                 null,
             cover:
                 item.album ? item.album.covers[config.trackCoverSize?.toUpperCase()] || item.album.covers['1280'] :
@@ -184,9 +192,6 @@ if (options.help || [
                 null,
         };
 
-        const directory = path.resolve(execDir, formatPath(details.isTrack ? config.albumDirectory : config.videoDirectory, details));
-        const mediaFilename = formatPath(details.isTrack ? config.trackFilename : config.videoFilename, details);
-        
         if (options.updates[itemIndex]) {
             const updatePath = path.resolve(execDir, options.updates[itemIndex]);
             const updatePathDirectory = path.dirname(updatePath);
@@ -202,7 +207,7 @@ if (options.help || [
                 coverFilename: updatePathFilename,
 
                 metadataEmbedder: config.metadataEmbedder,
-                keepCoverFile: config.coverFilename ? true : false,
+                keepCoverFile: true,
                 getCover: options.cover,
                 getLyrics: options.lyrics,
                 syncedLyricsOnly: config.syncedLyricsOnly,
@@ -224,19 +229,33 @@ if (options.help || [
             await download.createMedia(); // Create new file
             fs.unlinkSync(download.getOriginalPath()); // Delete original file
         } else {
+            const typeOptions = {
+                ...config.defaultTypeOptions,
+                ...config.typeOptions[
+                    details.playlist ? 'playlist' :
+                    details.video ? 'video' :
+                    'album' // NOTE: we dont know whether a entire album is in the queue or just 1 track
+                ],
+            };
+            const directory = path.resolve(execDir, formatPath(typeOptions.directory, details));
+            const mediaFilename = formatPath(typeOptions.filename, details);
+            const coverFilename = typeOptions.coverFilename ? formatPath(typeOptions.coverFilename, details) : mediaFilename;
+
             // Download item
             await new Download({
                 details,
                 logger,
                 directory,
                 mediaFilename,
+                coverFilename,
+                playlistCoverFilename: config.playlistCoverFilename && formatPath(config.playlistCoverFilename, details),
                 trackQuality: tidalTrackQualities[options.trackQuality] ?? options.trackQuality,
                 videoQuality: tidalVideoQualities[options.videoQuality] ?? options.videoQuality,
-                coverFilename: config.coverFilename ? formatPath(config.coverFilename, details) : mediaFilename,
                 overwriteExisting: options.overwrite,
                 embedMetadata: options.metadata,
                 metadataEmbedder: config.metadataEmbedder,
-                keepCoverFile: config.coverFilename ? true : false,
+                createPlaylistFile: config.createPlaylistFile,
+                keepCoverFile: typeOptions.coverFilename ? true : false,
                 getCover: options.cover,
                 getLyrics: options.lyrics,
                 syncedLyricsOnly: config.syncedLyricsOnly,
@@ -372,7 +391,9 @@ if (options.help || [
             const playlist = await getPlaylist(playlistUuid);
 
             // We don't need to fetch the track here, everything needed seems to be included
-            for (const track of playlist.tracks) {
+            for (let trackIndex = 0; trackIndex < playlist.tracks.length; trackIndex++) {
+                const track = playlist.tracks[trackIndex];
+
                 const artists = [];
                 const albumArtists = [];
 
@@ -385,7 +406,8 @@ if (options.help || [
                     album,
                     artists,
                     albumArtists,
-                    playlist
+                    playlist,
+                    trackIndex
                 });
             }
 

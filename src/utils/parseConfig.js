@@ -54,6 +54,31 @@ function parseConfig(configPath) {
         version = 3;
     }
 
+    if (version === 3) {
+        if (config.albumDirectory) {
+            config.defaultTypeOptions.directory = config.albumDirectory;
+            delete config.albumDirectory;
+        }
+        if (config.trackFilename) {
+            config.defaultTypeOptions.filename = config.trackFilename;
+            delete config.trackFilename;
+        }
+        if (config.videoDirectory) {
+            config.typeOptions.video.directory = config.videoDirectory;
+            delete config.videoDirectory;
+        }
+        if (config.videoFilename) {
+            config.typeOptions.video.filename = config.videoFilename;
+            delete config.videoFilename;
+        }
+        if (config.coverFilename) {
+            config.defaultTypeOptions.coverFilename = config.coverFilename;
+            delete config.coverFilename;
+        }
+
+        version = 4;
+    }
+
     config._version = version;
 
     if (version !== jsonConfig._version) fs.writeFileSync(configPath, JSON.stringify(config, null, 4));

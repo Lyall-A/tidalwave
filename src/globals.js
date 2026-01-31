@@ -73,6 +73,7 @@ module.exports = {
         'ORIGINAL': 'origin'
     },
     tidalAlbumCoverSizes: {
+        '320': '320x320',
         '640': '640x640',
         '1280': '1280x1280',
         'ORIGINAL': 'origin'
@@ -81,6 +82,9 @@ module.exports = {
         'ORIGINAL': 'origin'
     },
     tidalPlaylistImageSizes: {
+        '320': '320x320',
+        '640': '640x640',
+        '1280': '1280x1280',
         'ORIGINAL': 'origin'
     },
     tidalCredits: [
