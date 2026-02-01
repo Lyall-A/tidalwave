@@ -21,12 +21,12 @@ class Download {
         this.mediaFilename = options.mediaFilename;
         this.coverFilename = options.coverFilename ?? 'cover';
         this.playlistCoverFilename = options.playlistCoverFilename;
+        this.playlistFileFilename = options.playlistFileFilename;
         this.trackQuality = options.trackQuality;
         this.videoQuality = options.videoQuality;
         this.overwriteExisting = options.overwriteExisting ?? false;
         this.embedMetadata = options.embedMetadata ?? true;
         this.metadataEmbedder = options.metadataEmbedder ?? 'ffmpeg';
-        this.createPlaylistFile = options.createPlaylistFile ?? true;
         this.keepCoverFile = options.keepCoverFile ?? true;
         this.getCover = options.getCover ?? true;
         this.getLyrics = options.getLyrics ?? true;
@@ -73,7 +73,7 @@ class Download {
 
     async createPlaylist() {
         // Download playlist cover
-        if (this.getCover && !fs.existsSync(this.getPlaylistCoverPath())) {
+        if (this.getCover && this.playlistCoverFilename && !fs.existsSync(this.getPlaylistCoverPath())) {
             this.log('Downloading playlist cover...');
             await fetch(this.details.playlistCover).then(async res => {
                 if (res.status !== 200) throw new Error(`Got status code ${res.status}`);
@@ -87,7 +87,7 @@ class Download {
         }
 
         // Create playlist .m3u8 file
-        if (this.createPlaylistFile && !fs.existsSync(this.getPlaylistFilePath())) {
+        if (this.playlistFileFilename && !fs.existsSync(this.getPlaylistFilePath())) {
             fs.writeFileSync(this.getPlaylistFilePath(), '#EXTM3U\r\n');
         }
     }
@@ -145,7 +145,7 @@ class Download {
         }
 
         // Download cover
-        if (this.getCover && !fs.existsSync(this.getCoverPath())) {
+        if (this.getCover && this.coverFilename && !fs.existsSync(this.getCoverPath())) {
             this.log('Downloading cover...');
             await fetch(this.details.cover).then(async res => {
                 if (res.status !== 200) throw new Error(`Got status code ${res.status}`);
@@ -159,7 +159,8 @@ class Download {
         }
 
         // Add to M3U playlist
-        if (this.createPlaylistFile && fs.existsSync(this.getPlaylistFilePath())) {
+        if (this.playlistFileFilename && fs.existsSync(this.getPlaylistFilePath())) {
+            // #EXTINF:<duration>,<artist names seperated with ", "> - <full title>
             fs.appendFileSync(this.getPlaylistFilePath(), `#EXTINF:${this.details.duration},${this.details.artists.map(artist => artist.name).join(', ')} - ${this.details.title}\r\n${path.basename(this.getMediaPath())}\r\n`);
         }
 
@@ -276,7 +277,7 @@ class Download {
     }
 
     getPlaylistFilePath() {
-        return path.join(this.directory, 'playlist.m3u8');
+        return path.join(this.directory, `${this.playlistFileFilename}.m3u8`);
     }
 
     getPlaylistCoverPath() {

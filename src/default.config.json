@@ -1,5 +1,5 @@
 {
-    "_version": 4,
+    "_version": 5,
     "defaultTypeOptions": {
         "directory": "./Downloads/{{albumArtist.name}}/{{album.title}} ({{releaseYear}})",
         "filename": "{{artist.name}} - {{album.title}} - {{title}} - {{trackNumberPadded}}",
@@ -18,8 +18,8 @@
     },
     "trackQuality": "MAX",
     "videoQuality": "MAX",
-    "playlistCoverFilename": "cover",
-    "createPlaylistFile": true,
+    "playlistCoverFilename": "{{playlist.title}}",
+    "playlistFileFilename": "{{playlist.title}}",
     "useDolbyAtmos": false,
     "getLyrics": true,
     "syncedLyricsOnly": false,

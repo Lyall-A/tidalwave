@@ -55,28 +55,37 @@ function parseConfig(configPath) {
     }
 
     if (version === 3) {
-        if (config.albumDirectory) {
+        if (config.albumDirectory !== undefined) {
             config.defaultTypeOptions.directory = config.albumDirectory;
             delete config.albumDirectory;
         }
-        if (config.trackFilename) {
+        if (config.trackFilename !== undefined) {
             config.defaultTypeOptions.filename = config.trackFilename;
             delete config.trackFilename;
         }
-        if (config.videoDirectory) {
+        if (config.videoDirectory !== undefined) {
             config.typeOptions.video.directory = config.videoDirectory;
             delete config.videoDirectory;
         }
-        if (config.videoFilename) {
+        if (config.videoFilename !== undefined) {
             config.typeOptions.video.filename = config.videoFilename;
             delete config.videoFilename;
         }
-        if (config.coverFilename) {
+        if (config.coverFilename !== undefined) {
             config.defaultTypeOptions.coverFilename = config.coverFilename;
             delete config.coverFilename;
         }
 
         version = 4;
+    }
+
+    if (version === 4) {
+        if (config.createPlaylistFile !== undefined) {
+            if (!config.createPlaylistFile) config.playlistFileFilename = null;
+            delete config.createPlaylistFile
+        }
+
+        version = 5;
     }
 
     config._version = version;
