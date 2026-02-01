@@ -161,7 +161,9 @@ class Download {
         // Add to M3U playlist
         if (this.playlistFileFilename && fs.existsSync(this.getPlaylistFilePath())) {
             // #EXTINF:<duration>,<artist names seperated with ", "> - <full title>
-            fs.appendFileSync(this.getPlaylistFilePath(), `#EXTINF:${this.details.duration},${this.details.artists.map(artist => artist.name).join(', ')} - ${this.details.title}\r\n${path.basename(this.getMediaPath())}\r\n`);
+            // fs.appendFileSync(this.getPlaylistFilePath(), `#EXTINF:${this.details.duration},${this.details.artists.map(artist => artist.name).join(', ')} - ${this.details.title}\r\n${path.basename(this.getMediaPath())}\r\n`);
+            // #EXTINF:<duration>,<main artist> - <full title>
+            fs.appendFileSync(this.getPlaylistFilePath(), `#EXTINF:${this.details.duration},${this.details.artist.name} - ${this.details.title}\r\n${path.basename(this.getMediaPath())}\r\n`);
         }
 
         // Metadata
