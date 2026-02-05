@@ -17,9 +17,7 @@ const config = parseConfig(configPath);
 const secretsPath = config.secretsPath ? path.resolve(execDir, config.secretsPath) : undefined;
 const secrets = fs.existsSync(secretsPath) ? JSON.parse(fs.readFileSync(secretsPath)) : { };
 
-const logger = new Logger({
-    debugLogs: config.debug
-});
+const logger = new Logger();
 
 module.exports = {
     config,
@@ -31,6 +29,7 @@ module.exports = {
     logger,
     argOptions: [
         { name: 'help', shortName: 'h', noValue: true, description: 'Displays this menu' },
+        { name: 'debug', noValue: true, description: 'Enable debug', hidden: true },
 
         { name: 'track', shortName: 't', type: 'int', description: 'Download a track ID', valueDescription: 'track-id' },
         { name: 'album', shortName: 'm', type: 'int', description: 'Download a album ID', valueDescription: 'album-id' },
@@ -48,7 +47,7 @@ module.exports = {
 
         { name: 'track-quality', shortName: 'tq', aliases: ['quality'], shortAliases: ['q'], description: 'Track download quality', valueDescription: 'low|high|max', default: config.trackQuality },
         { name: 'video-quality', shortName: 'vq', description: 'Video download quality', valueDescription: 'low|high|max|<height>', default: config.videoQuality },
-        { name: 'dolby-atmos', shortName: 'da', type: 'bool', description: 'Downloads in immersive audio when available. Requires a token from a mobile device', valueDescription: 'yes|no', default: config.useDolbyAtmos },
+        { name: 'dolby-atmos', shortName: 'da', type: 'bool', description: 'Downloads in immersive audio when available. Requires a token from a mobile device', valueDescription: 'yes|no', default: config.useDolbyAtmos, hidden: true },
         { name: 'metadata', shortName: 'md', type: 'bool', description: 'Embed metadata to download', valueDescription: 'yes|no', default: config.embedMetadata },
         { name: 'lyrics', shortName: 'l', type: 'bool', description: 'Download lyrics if available', valueDescription: 'yes|no', default: config.getLyrics },
         { name: 'cover', shortName: 'c', type: 'bool', description: 'Download cover art', valueDescription: 'yes|no', default: config.getCover },

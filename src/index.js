@@ -28,6 +28,7 @@ const {
 const args = new Args(process.argv, argOptions);
 const options = {
     help: args.get('help'),
+    debug: args.get('debug') ?? config.debug,
 
     tracks: args.getAll('track'),
     albums: args.getAll('album'),
@@ -53,6 +54,8 @@ const options = {
     cover: args.get('cover') ?? config.getCover,
     overwrite: args.get('overwrite') ?? config.overwriteExisting,
 };
+logger.debugLogs = options.debug;
+
 logger.debug(`Options:\n${JSON.stringify(options, null, 4)}`);
 
 // Show help
