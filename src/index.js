@@ -8,6 +8,7 @@ const getArtist = require('./utils/getArtist');
 const getTrack = require('./utils/getTrack');
 const getVideo = require('./utils/getVideo');
 const getPlaylist = require('./utils/getPlaylist');
+const getMix = require('./utils/getMix');
 const search = require('./utils/search');
 const Args = require('./utils/Args');
 const formatPath = require('./utils/formatPath');
@@ -35,6 +36,7 @@ const options = {
     videos: args.getAll('video'),
     artists: args.getAll('artist'),
     playlists: args.getAll('playlist'),
+    mixes: args.getAll('mix'),
     searches: [
         ...args.getAll('search').map(query => ({ type: null, query })),
         ...args.getAll('search:track').map(query => ({ type: 'track', query })),
@@ -84,6 +86,7 @@ if (options.help || [
     for (const videoId of options.videos) await addVideo(videoId); // Videos
     for (const artistId of options.artists) await addArtist(artistId); // Artists
     for (const playlistUuid of options.playlists) await addPlaylist(playlistUuid); // Playlists
+    for (const mixId of options.mixes) await addMix(mixId); // Mixes
 
     // Searches
     for (const { type, query } of options.searches) {
@@ -107,17 +110,18 @@ if (options.help || [
 
     // URLS
     for (const url of options.urls) {
-        const match = url.match(/tidal\.com.*\/(track|album|video|artist|playlist)\/([0-9a-f-]+)/i);
+        const match = url.match(/tidal\.com.*\/(track|album|video|artist|playlist|mix)\/([0-9a-f-]+)/i);
         if (match) {
             const type = match[1].toLowerCase();
-            const id = parseInt(match[2], 10);
-            const uuid = match[2];
+            const id = match[2];
+            const idInt = parseInt(id, 10);
             
-            if (type === 'track') await addTrack(id); else
-            if (type === 'album') await addAlbum(id); else
-            if (type === 'video') await addVideo(id); else
-            if (type === 'artist') await addArtist(id); else
-            if (type === 'playlist') await addPlaylist(uuid); else
+            if (type === 'track') await addTrack(idInt); else
+            if (type === 'album') await addAlbum(idInt); else
+            if (type === 'video') await addVideo(idInt); else
+            if (type === 'artist') await addArtist(idInt); else
+            if (type === 'playlist') await addPlaylist(id); else
+            if (type === 'mix') await addMix(id); else
             logger.error(`Unknown type "${Logger.applyColor({ bold: true }, type)}"`, true, true); // NOTE: not possible with current regex
         } else {
             logger.error(`Couldn't determine URL "${Logger.applyColor({ bold: true }, url)}"`, true, true);
@@ -145,13 +149,14 @@ if (options.help || [
             artists: item.artists,
             albumArtists: item.albumArtists,
             playlist: item.playlist,
-            trackIndex: item.trackIndex, // used for playlists
+            mix: item.mix,
+            itemIndex: item.itemIndex, // used for playlists and mixes
             
             artist: item.artists?.[0],
             albumArtist: item.albumArtists?.[0],
             trackNumberPadded: item.track?.trackNumber?.toString().padStart(2, '0'), // TODO: maybe remove this and add a padding function in formatString?
             queueNum: itemIndex + 1,
-            playlistItemNum: item.trackIndex + 1,
+            itemNum: item.itemIndex + 1,
             playlistCover: item.playlist ? item.playlist.images[config.playlistCoverSize?.toUpperCase()] || item.playlist.images['ORIGINAL'] : null,
             isTrack: item.track ? true : false,
             isVideo: item.video ? true : false,
@@ -235,8 +240,9 @@ if (options.help || [
             const typeOptions = {
                 ...config.defaultTypeOptions,
                 ...config.typeOptions[
-                    details.playlist ? 'playlist' :
                     details.video ? 'video' :
+                    details.playlist ? 'playlist' :
+                    details.mix ? 'mix' :
                     'album' // NOTE: we dont know whether a entire album is in the queue or just 1 track
                 ],
             };
@@ -394,8 +400,8 @@ if (options.help || [
             const playlist = await getPlaylist(playlistUuid);
 
             // We don't need to fetch the track here, everything needed seems to be included
-            for (let trackIndex = 0; trackIndex < playlist.tracks.length; trackIndex++) {
-                const track = playlist.tracks[trackIndex];
+            for (let itemIndex = 0; itemIndex < playlist.tracks.length; itemIndex++) {
+                const track = playlist.tracks[itemIndex];
 
                 const artists = [];
                 const albumArtists = [];
@@ -410,13 +416,44 @@ if (options.help || [
                     artists,
                     albumArtists,
                     playlist,
-                    trackIndex
+                    itemIndex
                 });
             }
 
             logger.info(`Found playlist: ${Logger.applyColor({ bold: true }, `${playlist.title} - ${playlist.trackCount} tracks`)} (${playlist.uuid})`, true, true);
         } catch (err) {
             logger.error(`Could not find playlist UUID: ${Logger.applyColor({ bold: true }, playlistUuid)}`, true, true);
+        }
+    }
+
+    async function addMix(mixId) {
+        try {
+            const mix = await getMix(mixId);
+
+            for (let itemIndex = 0; itemIndex < mix.tracks.length; itemIndex++) {
+                const partialTrack = mix.tracks[itemIndex];
+                const track = await findTrack(partialTrack.id, partialTrack);
+
+                const artists = [];
+                const albumArtists = [];
+
+                const album = await findAlbum(track.album.id, track.album);
+                for (const artist of track.artists) artists.push(await findArtist(artist.id, artist));
+                for (const artist of album.artists) albumArtists.push(await findArtist(artist.id, artist));
+
+                queue.push({
+                    track,
+                    album,
+                    artists,
+                    albumArtists,
+                    mix,
+                    itemIndex
+                });
+            }
+
+            logger.info(`Found mix: ${Logger.applyColor({ bold: true }, `${mix.title} - ${mix.subTitle}`)} (${mix.id})`, true, true);
+        } catch (err) {
+            logger.error(`Could not find mix ID: ${Logger.applyColor({ bold: true }, mixId)}`, true, true);
         }
     }
 

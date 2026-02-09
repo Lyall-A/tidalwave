@@ -12,7 +12,12 @@
         },
         "playlist": {
             "directory": "./Downloads/Playlists/{{playlist.title}}",
-            "filename": "{{playlistItemNum}} - {{artist.name}} - {{title}}",
+            "filename": "{{itemNum}} - {{artist.name}} - {{title}}",
+            "coverFilename": null
+        },
+        "mix": {
+            "directory": "./Downloads/Mixes/{{mix.title}} - {{mix.subTitle}}",
+            "filename": "{{itemNum}} - {{artist.name}} - {{title}}",
             "coverFilename": null
         }
     },
