@@ -67,6 +67,7 @@ if (options.help || [
     ...options.videos,
     ...options.artists,
     ...options.playlists,
+    ...options.mixes,
     ...options.searches,
     ...options.urls
 ].length === 0) showHelp();
