@@ -10,7 +10,7 @@ function spawn(command, args) {
         const spawnedProcess = child_process.spawn(command, args, {
             env: {
                 ...process.env,
-                PATH: `${process.env.PATH}${process.platform === 'win32' ? ';' : ':'}${path.join(execDir, 'bin')}`
+                PATH: `${path.join(execDir, 'bin')}${process.platform === 'win32' ? ';' : ':'}${process.env.PATH}`
             }
         });
 
