@@ -61,7 +61,7 @@ class Download {
         fs.mkdirSync(this.directory, { recursive: true }); // Create directory
         await this.getSegments(); // Get segment URL's
         if (fs.existsSync(this.getMediaPath()) && !this.overwriteExisting) return this.log('Already downloaded!'); // Check if already downloaded
-        if (this.details.playlist || this.details.mix) await this.createPlaylist(); // Create playlist info (.m3u8 and cover)
+        if (this.details.isPlaylist || this.details.isMix) await this.createPlaylist(); // Create playlist info (.m3u8 and cover)
         await this.downloadSegments(); // Download segments
         if (this.embedMetadata) await this.getMetadata(); // Get metadata
         await this.createMedia(); // Create output

@@ -245,9 +245,9 @@ if (options.help || [
             const typeOptions = {
                 ...config.defaultTypeOptions,
                 ...config.typeOptions[
-                    details.video ? 'video' :
-                    details.playlist ? 'playlist' :
-                    details.mix ? 'mix' :
+                    details.isVideo ? 'video' :
+                    details.isPlaylist ? 'playlist' :
+                    details.isMix ? 'mix' :
                     'album' // NOTE: we dont know whether a entire album is in the queue or just 1 track
                 ],
             };
