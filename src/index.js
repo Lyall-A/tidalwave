@@ -159,8 +159,12 @@ if (options.help || [
             queueNum: itemIndex + 1,
             itemNum: item.itemIndex + 1,
             playlistCover: item.playlist ? item.playlist.images[config.playlistCoverSize?.toUpperCase()] || item.playlist.images['ORIGINAL'] : null,
+            mixCover: item.mix ? item.mix.images[config.mixCoverSize?.toUpperCase()] || item.mix.images['LARGE'] : null,
+            mixDetailCover: item.mix ? item.mix.detailImages[config.mixCoverSize?.toUpperCase()] || item.mix.images['LARGE'] : null, // not currently used
             isTrack: item.track ? true : false,
             isVideo: item.video ? true : false,
+            isPlaylist: item.playlist ? true : false,
+            isMix: item.mix ? true : false,
 
             // Generic details
             type:
@@ -258,8 +262,8 @@ if (options.help || [
                 directory,
                 mediaFilename,
                 coverFilename,
-                playlistCoverFilename: config.playlistCoverFilename && formatPath(config.playlistCoverFilename, details),
-                playlistFileFilename: config.playlistFileFilename && formatPath(config.playlistFileFilename, details),
+                playlistCoverFilename: (config.playlistCoverFilename && formatPath(config.playlistCoverFilename, details)) || (config.mixCoverFilename && formatPath(config.mixCoverFilename, details)),
+                playlistFileFilename: (config.playlistFileFilename && formatPath(config.playlistFileFilename, details)) || (config.mixFileFilename && formatPath(config.mixFileFilename, details)),
                 trackQuality: tidalTrackQualities[options.trackQuality] === undefined ? options.trackQuality : tidalTrackQualities[options.trackQuality],
                 videoQuality: tidalVideoQualities[options.videoQuality] === undefined ? options.videoQuality : tidalVideoQualities[options.videoQuality],
                 overwriteExisting: options.overwrite,

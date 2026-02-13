@@ -87,6 +87,11 @@ module.exports = {
         '1280': '1280x1280',
         'ORIGINAL': 'origin'
     },
+    tidalMixImageSizes: {
+        'SMALL': 'SMALL',
+        'MEDIUM': 'MEDIUM',
+        'LARGE': 'LARGE'
+    },
     tidalCredits: [
         // NOTE: found from searching various albums and tracks, theres definitely more
 

@@ -7,7 +7,8 @@ function parseMix(mix, additional = { }) {
         subTitle: mix.subTitle,
         shortSubTitle: mix.shortSubtitle,
         description: mix.description,
-        // images: mix.images, // TODO: add images (no text) and detailImages (with text)
+        images: Object.fromEntries(Object.entries(mix.images).map(([key, value]) => [key, value.url])),
+        detailImages: Object.fromEntries(Object.entries(mix.detailImages).map(([key, value]) => [key, value.url])),
         tracks: additional?.items.map(item => parseTrack(item))
     };
 }
