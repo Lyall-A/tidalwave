@@ -59,9 +59,9 @@ class Download {
         this.logger.lastLog = '';
 
         fs.mkdirSync(this.directory, { recursive: true }); // Create directory
-        if (this.details.playlist) await this.createPlaylist(); // Create playlist info (.m3u8 and cover)
         await this.getSegments(); // Get segment URL's
         if (fs.existsSync(this.getMediaPath()) && !this.overwriteExisting) return this.log('Already downloaded!'); // Check if already downloaded
+        if (this.details.isPlaylist || this.details.isMix) await this.createPlaylist(); // Create playlist info (.m3u8 and cover)
         await this.downloadSegments(); // Download segments
         if (this.embedMetadata) await this.getMetadata(); // Get metadata
         await this.createMedia(); // Create output
@@ -73,17 +73,18 @@ class Download {
 
     async createPlaylist() {
         // Download playlist cover
+        // TODO: make cleaner
         if (this.getCover && this.playlistCoverFilename && !fs.existsSync(this.getPlaylistCoverPath())) {
-            this.log('Downloading playlist cover...');
-            await fetch(this.details.playlistCover).then(async res => {
+            this.log(`Downloading ${this.details.isMix ? 'mix' : 'playlist'} cover...`);
+            await fetch(this.details.isMix ? this.details.mixCover : this.details.playlistCover).then(async res => {
                 if (res.status !== 200) throw new Error(`Got status code ${res.status}`);
                 const coverBuffer = Buffer.from(await res.arrayBuffer());
                 fs.writeFileSync(this.getPlaylistCoverPath(), coverBuffer);
             }).catch(err => {
-                this.log(`Failed to download playlist cover: ${err.message}`, 'error');
+                this.log(`Failed to download ${this.details.isMix ? 'mix' : 'playlist'} cover: ${err.message}`, 'error');
             });
         } else {
-            this.log('Playlist cover already downladed');
+            this.log(`${this.details.isMix ? 'Mix' : 'Playlist'} cover already downladed`);
         }
 
         // Create playlist .m3u8 file

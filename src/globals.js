@@ -36,6 +36,7 @@ module.exports = {
         { name: 'video', shortName: 'v', description: 'Download a video ID', valueDescription: 'video-id' },
         { name: 'artist', shortName: 'a', type: 'int', description: 'Download an artist ID\'s discography', valueDescription: 'artist-id' },
         { name: 'playlist', shortName: 'p', description: 'Download all items from a playlist UUID', valueDescription: 'playlist-uuid' },
+        { name: 'mix', shortName: 'x', description: 'Download all items from a mix ID', valueDescription: 'mix-id' },
         { name: 'search', shortName: 's', description: 'Download top search', valueDescription: 'query' },
         { name: 'search:track', shortName: 's:t', description: 'Download top search for a track', valueDescription: 'query' },
         { name: 'search:album', shortName: 's:m', description: 'Download top search for a album', valueDescription: 'query' },
@@ -85,6 +86,11 @@ module.exports = {
         '640': '640x640',
         '1280': '1280x1280',
         'ORIGINAL': 'origin'
+    },
+    tidalMixImageSizes: {
+        'SMALL': 'SMALL',
+        'MEDIUM': 'MEDIUM',
+        'LARGE': 'LARGE'
     },
     tidalCredits: [
         // NOTE: found from searching various albums and tracks, theres definitely more

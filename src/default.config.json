@@ -12,7 +12,12 @@
         },
         "playlist": {
             "directory": "./Downloads/Playlists/{{playlist.title}}",
-            "filename": "{{playlistItemNum}} - {{artist.name}} - {{title}}",
+            "filename": "{{itemNum}} - {{artist.name}} - {{title}}",
+            "coverFilename": null
+        },
+        "mix": {
+            "directory": "./Downloads/Mixes/{{mix.title}} - {{mix.subTitle}}",
+            "filename": "{{itemNum}} - {{artist.name}} - {{title}}",
             "coverFilename": null
         }
     },
@@ -20,6 +25,8 @@
     "videoQuality": "MAX",
     "playlistCoverFilename": "{{playlist.title}}",
     "playlistFileFilename": "{{playlist.title}}",
+    "mixCoverFilename": "{{mix.title}} - {{mix.subTitle}}",
+    "mixFileFilename": "{{mix.title}} - {{mix.subTitle}}",
     "useDolbyAtmos": false,
     "getLyrics": true,
     "syncedLyricsOnly": false,
@@ -35,6 +42,7 @@
     "trackCoverSize": "1280",
     "videoCoverSize": "1280x720",
     "playlistCoverSize": "ORIGINAL",
+    "mixCoverSize": "LARGE",
     "customMetadata": [
         ["comment", "Downloaded from TIDAL: {{url}}"],
         ["source", "TIDAL"],
