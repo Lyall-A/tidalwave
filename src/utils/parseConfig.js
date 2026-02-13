@@ -5,6 +5,7 @@ const defaultConfig = require('../default.config.json');
 function parseConfig(configPath) {
     const jsonConfig = JSON.parse(fs.readFileSync(configPath));
     let version = jsonConfig._version;
+    let shouldUpdate = false;
 
     const config = {
         ...defaultConfig,
@@ -82,15 +83,28 @@ function parseConfig(configPath) {
     if (version === 4) {
         if (config.createPlaylistFile !== undefined) {
             if (!config.createPlaylistFile) config.playlistFileFilename = null;
-            delete config.createPlaylistFile
+            delete config.createPlaylistFile;
         }
 
         version = 5;
     }
 
+    if (version === 5) {
+        // Old Client ID and Client Secret stopped working
+        if (config.clientId === '1ozX4gKj6qmZu4rg') {
+            config.clientId = defaultConfig.clientId;
+            shouldUpdate = true;
+        }
+        if (config.clientSecret === 'nc0ZouR3w3YSLN1dyvhTUXZE9dRwDdiV1ivFNFhImkE=') {
+            config.clientSecret = defaultConfig.clientSecret;
+            shouldUpdate = true;
+        }
+    }
+
     config._version = version;
 
-    if (version !== jsonConfig._version) fs.writeFileSync(configPath, JSON.stringify(config, null, 4));
+    if (version !== jsonConfig._version) shouldUpdate = true;
+    if (shouldUpdate) fs.writeFileSync(configPath, JSON.stringify(config, null, 4));
 
     return config;
 }

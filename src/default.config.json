@@ -63,8 +63,8 @@
     "secretsPath": "./secrets.json",
 
     "debug": false,
-    "clientId": "1ozX4gKj6qmZu4rg",
-    "clientSecret": "nc0ZouR3w3YSLN1dyvhTUXZE9dRwDdiV1ivFNFhImkE=",
+    "clientId": "HRoqbmhC95hy8E2y",
+    "clientSecret": "yJU3DfmewLikin5UZmEAhbjCwMvYJqrZjbWDHQ8TQ6g=",
     "scope": ["r_usr", "w_usr"],
     "openApiV2BaseUrl": "https://openapi.tidal.com/v2",
     "authApiBaseUrl": "https://auth.tidal.com/v1",
