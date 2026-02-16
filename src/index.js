@@ -231,7 +231,7 @@ if (options.help || [
                 roleTagSeparator: config.roleTagSeparator,
                 customMetadata: config.customMetadata,
                 downloadLogPadding: config.downloadLogPadding,
-                logPrefix: `${Logger.applyColor({ bold: true }, `[${itemIndex + 1} / ${queue.length}]`)} Updating ${Logger.applyColor({ bold: true }, details.title)} - ${Logger.applyColor({ bold: true }, details.artist.name)}: `,
+                logPrefix: `${Logger.applyColor({ bold: true }, `[${itemIndex + 1} / ${queue.length}]`)} Updating ${Logger.applyColor({ bold: true }, details.title)} - ${Logger.applyColor({ bold: true }, details.artist?.name)}: `,
 
                 originalExtension: updatePathExtension,
                 mediaExtension: updatePathExtension,
@@ -283,7 +283,7 @@ if (options.help || [
                 segmentWaitMin: config.segmentWaitMin,
                 segmentWaitMax: config.segmentWaitMax,
                 downloadLogPadding: config.downloadLogPadding,
-                logPrefix: `${Logger.applyColor({ bold: true }, `[${itemIndex + 1} / ${queue.length}]`)} Downloading ${Logger.applyColor({ bold: true }, details.title)} - ${Logger.applyColor({ bold: true }, details.artist.name)}: `,
+                logPrefix: `${Logger.applyColor({ bold: true }, `[${itemIndex + 1} / ${queue.length}]`)} Downloading ${Logger.applyColor({ bold: true }, details.title)} - ${Logger.applyColor({ bold: true }, details.artist?.name)}: `,
                 useDolbyAtmos: options.dolbyAtmos
             }).download();
         }
@@ -303,7 +303,7 @@ if (options.help || [
 
             const album = await findAlbum(track.album.id, track.album);
             for (const artist of track.artists) artists.push(await findArtist(artist.id, artist));
-            for (const artist of album.artists) albumArtists.push(await findArtist(artist.id, artist));
+            for (const artist of album.artists || []) albumArtists.push(await findArtist(artist.id, artist));
 
             queue.push({
                 track,
@@ -326,13 +326,13 @@ if (options.help || [
 
             if (album.upload && !config.allowUserUploads) throw new Error('User uploads are disabled');
 
-            for (const track of album.tracks) tracks.push(await findTrack(track.id));
+            for (const track of album.tracks) tracks.push(await findTrack(track.id, track));
             
             for (const track of tracks) {
                 const artists = [];
                 const albumArtists = [];
 
-                for (const artist of track.artists) artists.push(await findArtist(artist.id, artist));
+                for (const artist of track.artists || []) artists.push(await findArtist(artist.id, artist));
                 for (const artist of album.artists) albumArtists.push(await findArtist(artist.id, artist));
 
                 queue.push({
@@ -355,7 +355,7 @@ if (options.help || [
         try {
             const video = await findVideo(videoId);
 
-            for (const artist of video.artists) artists.push(await findArtist(artist.id));
+            for (const artist of video.artists) artists.push(await findArtist(artist.id, artist));
 
             queue.push({
                 video,
@@ -376,14 +376,14 @@ if (options.help || [
                 const tracks = [];
 
                 const album = await findAlbum(partialAlbum.id, partialAlbum);
-                for (const track of album.tracks) tracks.push(await findTrack(track.id, track));
+                for (const track of album.tracks || []) tracks.push(await findTrack(track.id, track));
 
                 for (const track of tracks) {
                     const artists = [];
                     const albumArtists = [];
 
-                    for (const artist of track.artists) artists.push(await findArtist(artist.id, artist));
-                    for (const artist of album.artists) albumArtists.push(await findArtist(artist.id, artist));
+                    for (const artist of track.artists || []) artists.push(await findArtist(artist.id, artist));
+                    for (const artist of album.artists || []) albumArtists.push(await findArtist(artist.id, artist));
 
                     queue.push({
                         track,
@@ -412,8 +412,8 @@ if (options.help || [
                 const albumArtists = [];
 
                 const album = await findAlbum(track.album.id, track.album);
-                for (const artist of track.artists) artists.push(await findArtist(artist.id, artist));
-                for (const artist of album.artists) albumArtists.push(await findArtist(artist.id, artist));
+                for (const artist of track.artists || []) artists.push(await findArtist(artist.id, artist));
+                for (const artist of album.artists || []) albumArtists.push(await findArtist(artist.id, artist));
 
                 queue.push({
                     track,
@@ -443,8 +443,8 @@ if (options.help || [
                 const albumArtists = [];
 
                 const album = await findAlbum(track.album.id, track.album);
-                for (const artist of track.artists) artists.push(await findArtist(artist.id, artist));
-                for (const artist of album.artists) albumArtists.push(await findArtist(artist.id, artist));
+                for (const artist of track.artists || []) artists.push(await findArtist(artist.id, artist));
+                for (const artist of album.artists || []) albumArtists.push(await findArtist(artist.id, artist));
 
                 queue.push({
                     track,

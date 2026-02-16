@@ -172,7 +172,7 @@ class Download {
         const track = this.details.track;
 
         const albumCredits = this.details.album?.credits || [];
-        const trackCredits = this.details.album?.trackCredits.find(({ track }) => track.id === this.details.id)?.credits || [];
+        const trackCredits = this.details.album?.trackCredits?.find(({ track }) => track.id === this.details.id)?.credits || [];
 
         const customMetadata = this.customMetadata?.map(i => ([i[0], formatString(i[1], this.details)])) || [];
         const creditMetadata = [...trackCredits, ...albumCredits].map(credit => credit.tagName ? [credit.tagName, normalizeTag(credit.contributors.map(i => i.name), this.roleTagSeparator)] : null).filter(i => i);
