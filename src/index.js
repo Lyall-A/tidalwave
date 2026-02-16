@@ -467,6 +467,9 @@ if (options.help || [
         if (foundTrack) {
             logger.debug(`Found already fetched track: ${trackId}`);
             return foundTrack;
+        } else if (partialData && config.forcePartialData) {
+            logger.warn(`Using partial data for track ${Logger.applyColor({ bold: true }, trackId)}, some information may be missing!`, true, true);
+            return partialData;
         } else {
             logger.info(`Getting information about track: ${Logger.applyColor({ bold: true }, trackId)}`, true);
             const track = await getTrack(trackId).catch(err => {
@@ -485,6 +488,9 @@ if (options.help || [
         if (foundAlbum) {
             logger.debug(`Found already fetched album: ${albumId}`);
             return foundAlbum;
+        } else if (partialData && config.forcePartialData) {
+            logger.warn(`Using partial data for album ${Logger.applyColor({ bold: true }, albumId)}, some information may be missing!`, true, true);
+            return partialData;
         } else {
             logger.info(`Getting information about album: ${Logger.applyColor({ bold: true }, albumId)}`, true);
             const album = await getAlbum(albumId).catch(err => {
@@ -516,6 +522,9 @@ if (options.help || [
         if (foundArtist) {
             logger.debug(`Found already fetched artist: ${artistId}`);
             return foundArtist;
+        } else if (partialData && config.forcePartialData) {
+            logger.warn(`Using partial data for artist ${Logger.applyColor({ bold: true }, artistId)}, some information may be missing!`, true, true);
+            return partialData;
         } else {
             logger.info(`Getting information about artist: ${Logger.applyColor({ bold: true }, artistId)}`, true);
             const artist = await getArtist(artistId).catch(err => {

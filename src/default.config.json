@@ -37,6 +37,7 @@
     "roleTagSeparator": ";",
     "useArtistsTag": false,
     "allowUserUploads": false,
+    "forcePartialData": false,
     "partialDataFallback": true,
     "getCover": true,
     "trackCoverSize": "1280",
