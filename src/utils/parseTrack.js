@@ -11,6 +11,7 @@ function parseTrack(track) {
         upload: track.upload,
         copyright: track.copyright,
         explicit: track.explicit,
+        mixId: track.mixes?.TRACK_MIX,
         isrc: track.isrc,
         quality: track.audioQuality,
         modes: track.audioModes,
