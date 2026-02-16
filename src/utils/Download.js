@@ -68,7 +68,7 @@ class Download {
         if (!this.keepOriginalFile) fs.unlinkSync(this.getOriginalPath()); // Delete container file
         if (!this.keepCoverFile && fs.existsSync(this.getCoverPath())) fs.unlinkSync(this.getCoverPath()); // Delete cover file
 
-        this.log(`Completed (${Math.floor((Date.now() - startDate) / 1000)}s)`);
+        this.log(`Completed in ${Math.floor((Date.now() - startDate) / 1000)}s ${Logger.applyColor({ bold: true }, `[${[this.playbackInfo.bitDepth && this.playbackInfo.sampleRate && `${this.playbackInfo.bitDepth}-bit/${this.playbackInfo.sampleRate / 1000} kHz`, `${(this.fileStream.bytesWritten / 1024 / 1024).toFixed(2)} MB`].filter(i => i).join(', ')}]`)}`);
     }
 
     async createPlaylist() {
@@ -217,7 +217,8 @@ class Download {
     }
         
     async downloadSegments() {
-        const stream = fs.createWriteStream(this.getOriginalPath());
+        // TODO: wait for drain when writing?
+        this.fileStream = fs.createWriteStream(this.getOriginalPath());
 
         for (let segmentIndex = 0; segmentIndex < this.segmentUrls.length; segmentIndex++) {
             const segmentUrl = this.segmentUrls[segmentIndex]
@@ -226,13 +227,13 @@ class Download {
             this.log(`Downloading segment ${segmentIndex + 1} of ${this.segmentUrls.length}...`);
             
             const segmentData = await fetch(segmentUrl).then(async res => Buffer.from(await res.arrayBuffer()));
-            stream.write(segmentData);
+            this.fileStream.write(segmentData);
 
             const delay = Math.floor(Math.random() * (this.segmentWaitMax - this.segmentWaitMin + 1) + this.segmentWaitMin);
-            if (delay) await setTimeout(delay)
+            if (delay) await setTimeout(delay);
         }
 
-        stream.end();
+        this.fileStream.end();
     }
 
     async createMedia() {
