@@ -279,7 +279,7 @@ if (options.help || [
                 artistTagSeparator: config.artistTagSeparator,
                 roleTagSeparator: config.roleTagSeparator,
                 customMetadata: config.customMetadata,
-                keepOriginalFile: config.debug ? true : false,
+                keepOriginalFile: options.debug ? true : false,
                 segmentWaitMin: config.segmentWaitMin,
                 segmentWaitMax: config.segmentWaitMax,
                 downloadLogPadding: config.downloadLogPadding,
