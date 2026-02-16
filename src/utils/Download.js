@@ -4,6 +4,7 @@ const { setTimeout } = require('timers/promises');
 
 const Logger = require('./Logger');
 const getPlaybackInfo = require('./getPlaybackInfo');
+const getTrackManifest = require('./getTrackManifest');
 const parseManifest = require('./parseManifest');
 const createMedia = require('./createMedia');
 const embedMetadata = require('./embedMetadata');
@@ -97,6 +98,12 @@ class Download {
         this.log('Getting segment URL\'s...');
         this.playbackInfo = await getPlaybackInfo(this.details.id, this.details.type, this.details.isVideo ? 'HIGH' : this.trackQuality, (this.details.isTrack && this.details.track.qualityTypes.includes('DOLBY_ATMOS') && this.useDolbyAtmos) ? true : false);
         this.manifest = await parseManifest(Buffer.from(this.playbackInfo.manifest, 'base64').toString(), this.playbackInfo.manifestMimeType);
+        
+        // please dont
+        // this.trackManifest = await getTrackManifest(this.details.id);
+        // if (this.trackManifest.attributes.drmData) this.log(`Encrypted with ${this.trackManifest.attributes.drmData.drmSystem}, good luck!`, 'warn');
+        // const [manifestUriMatch, manifestType, manifestBase64] = this.trackManifest.attributes.uri.match(/^data:(.*?);base64,(.*)/);
+        // this.manifest = await parseManifest(Buffer.from(manifestBase64, 'base64').toString(), manifestType);
 
         if (this.playbackInfo.assetPresentation === 'PREVIEW') this.log('Downloading preview, make sure you have a valid subscription!', 'warn');
         

@@ -3,14 +3,15 @@ const { config, secrets, logger } = require('../globals');
 function tidalApi(api = 'openv2', path, options = { }) {
     const baseUrl = api === 'openv2' ? config.openApiV2BaseUrl : api === 'privatev1' ? config.privateApiV1BaseUrl : api === 'privatev2' ? config.privateApiV2BaseUrl : null;
     const params = {
-        ...Object.fromEntries(new URLSearchParams(path.split('?')[1])),
         ...(options.query || {}),
         locale: 'en_US',
         countryCode: secrets.countryCode,
         deviceType: 'BROWSER',
         platform: 'WEB'
     };
-    const urlSearchParams = new URLSearchParams(params);
+    const urlSearchParams = new URLSearchParams();
+    new URLSearchParams(path.split('?')[1]).forEach((value, key) => urlSearchParams.append(key, value));
+    Object.entries(params).forEach(([key, value]) => urlSearchParams.append(key, value));
 
     path = path.split('?')[0];
 
