@@ -224,7 +224,6 @@ class Download {
     }
         
     async downloadSegments() {
-        // TODO: wait for drain when writing?
         this.fileStream = fs.createWriteStream(this.getOriginalPath());
 
         for (let segmentIndex = 0; segmentIndex < this.segmentUrls.length; segmentIndex++) {
@@ -234,7 +233,11 @@ class Download {
             this.log(`Downloading segment ${segmentIndex + 1} of ${this.segmentUrls.length}...`);
             
             const segmentData = await fetch(segmentUrl).then(async res => Buffer.from(await res.arrayBuffer()));
-            this.fileStream.write(segmentData);
+
+            if (!this.fileStream.write(segmentData)) {
+                // buffer full, wait for drain
+                await new Promise(resolve => this.fileStream.once('drain', resolve));
+            }
 
             const delay = Math.floor(Math.random() * (this.segmentWaitMax - this.segmentWaitMin + 1) + this.segmentWaitMin);
             if (delay) await setTimeout(delay);
