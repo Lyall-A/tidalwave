@@ -21,6 +21,15 @@
             "coverFilename": null
         }
     },
+    "transcoding": {
+        "enabled": false,
+        "audioFormat": "mp3",
+        "audioCodec": "libmp3lame",
+        "audioBitrate": "320k",
+        "videoFormat": "mp4",
+        "videoCodec": "libx264",
+        "videoBitrate": "8000k"
+    },
     "trackQuality": "MAX",
     "videoQuality": "MAX",
     "playlistCoverFilename": "{{playlist.title}}",
