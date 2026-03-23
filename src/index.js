@@ -245,9 +245,9 @@ if (options.help || [
             const typeOptions = {
                 ...config.defaultTypeOptions,
                 ...config.typeOptions[
-                    details.isVideo ? 'video' :
                     details.isPlaylist ? 'playlist' :
                     details.isMix ? 'mix' :
+                    details.isVideo ? 'video' :
                     'album' // NOTE: we dont know whether a entire album is in the queue or just 1 track
                 ],
             };
@@ -426,7 +426,7 @@ if (options.help || [
                     });
                 } else if (itemType === 'video') {
                     const artists = [];
-                    
+
                     for (const artist of item.artists) artists.push(await findArtist(artist.id, artist));
 
                     queue.push({
