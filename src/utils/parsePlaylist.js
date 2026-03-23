@@ -1,6 +1,7 @@
 const { config, tidalPlaylistImageSizes } = require ('../globals');
 
 const parseTrack = require('./parseTrack');
+const parseVideo = require('./parseVideo');
 
 function parsePlaylist(playlist, additional = { }) {
     return {
@@ -11,11 +12,17 @@ function parsePlaylist(playlist, additional = { }) {
         images: playlist.squareImage && Object.fromEntries(Object.entries(tidalPlaylistImageSizes).map(([name, size]) => [name, `${config.resourcesBaseUrl}/images/${playlist.squareImage.replace(/-/g, '/')}/${size}.jpg`])) || undefined,
         // image: playlist.squareImage && `${config.resourcesBaseUrl}/images/${playlist.squareImage.replace(/-/g, '/')}/origin.jpg` || undefined,
         customImage: playlist.customImageUrl, // not used even with custom images?
-        trackCount: playlist.numberOfTracks,
+        // trackCount: playlist.numberOfTracks,
         sharing: playlist.sharingLevel,
         created: playlist.created,
         lastUpdated: playlist.lastUpdated,
-        tracks: additional?.items?.filter(({ type }) => type === 'track').map(({ item }) => parseTrack(item))
+        items: additional?.items?.map(({ type, item }) => ({
+            type,
+            item:
+                type === 'track'? parseTrack(item) :
+                type === 'video' ? parseVideo(item) :
+                null
+        })).filter(({ item }) => item !== null)
     };
 }
 

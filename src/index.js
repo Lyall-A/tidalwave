@@ -404,28 +404,41 @@ if (options.help || [
         try {
             const playlist = await getPlaylist(playlistUuid);
 
-            // We don't need to fetch the track here, everything needed seems to be included
-            for (let itemIndex = 0; itemIndex < playlist.tracks.length; itemIndex++) {
-                const track = playlist.tracks[itemIndex];
+            for (let itemIndex = 0; itemIndex < playlist.items.length; itemIndex++) {
+                const { type: itemType, item } = playlist.items[itemIndex];
+                
+                // We don't need to fetch the track/video here, everything needed seems to be included already
+                if (itemType === 'track') {
+                    const artists = [];
+                    const albumArtists = [];
+    
+                    const album = await findAlbum(item.album.id, item.album);
+                    for (const artist of item.artists || []) artists.push(await findArtist(artist.id, artist));
+                    for (const artist of album.artists || []) albumArtists.push(await findArtist(artist.id, artist));
+    
+                    queue.push({
+                        track: item,
+                        album,
+                        artists,
+                        albumArtists,
+                        playlist,
+                        itemIndex
+                    });
+                } else if (itemType === 'video') {
+                    const artists = [];
+                    
+                    for (const artist of item.artists) artists.push(await findArtist(artist.id, artist));
 
-                const artists = [];
-                const albumArtists = [];
-
-                const album = await findAlbum(track.album.id, track.album);
-                for (const artist of track.artists || []) artists.push(await findArtist(artist.id, artist));
-                for (const artist of album.artists || []) albumArtists.push(await findArtist(artist.id, artist));
-
-                queue.push({
-                    track,
-                    album,
-                    artists,
-                    albumArtists,
-                    playlist,
-                    itemIndex
-                });
+                    queue.push({
+                        video: item,
+                        artists,
+                        playlist,
+                        itemIndex
+                    });
+                }
             }
 
-            logger.info(`Found playlist: ${Logger.applyColor({ bold: true }, `${playlist.title} - ${playlist.trackCount} tracks`)} (${playlist.uuid})`, true, true);
+            logger.info(`Found playlist: ${Logger.applyColor({ bold: true }, `${playlist.title} - ${playlist.items.length} items`)} (${playlist.uuid})`, true, true);
         } catch (err) {
             logger.error(`Could not find playlist UUID: ${Logger.applyColor({ bold: true }, playlistUuid)}`, true, true);
         }
