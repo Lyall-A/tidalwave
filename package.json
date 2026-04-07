@@ -4,16 +4,17 @@
   "description": "A TIDAL downloader for tracks, albums, artist discographies and playlists",
   "main": "./src/index.js",
   "scripts": {
-    "build": "npm run build:all",
-    "build:linux": "npm run build:linux-x64",
-    "build:windows": "npm run build:windows-x64",
-    "build:macos": "npm run build:macos-arm64",
-    "build:linux-x64": "cd scripts && bash ./build-linux-x64.sh",
-    "build:linux-arm64": "cd scripts && bash ./build-linux-arm64.sh",
-    "build:windows-x64": "cd scripts && bash ./build-windows-x64.sh",
-    "build:macos-x64": "cd scripts && bash ./build-macos-x64.sh",
-    "build:macos-arm64": "cd scripts && bash ./build-macos-arm64.sh",
-    "build:all": "cd scripts && bash ./build-all.sh",
+    "build": "tsc",
+    "package": "npm run package:all",
+    "package:linux": "npm run package:linux-x64",
+    "package:windows": "npm run package:windows-x64",
+    "package:macos": "npm run package:macos-arm64",
+    "package:linux-x64": "cd scripts && bash ./package-linux-x64.sh",
+    "package:linux-arm64": "cd scripts && bash ./package-linux-arm64.sh",
+    "package:windows-x64": "cd scripts && bash ./package-windows-x64.sh",
+    "package:macos-x64": "cd scripts && bash ./package-macos-x64.sh",
+    "package:macos-arm64": "cd scripts && bash ./package-macos-arm64.sh",
+    "package:all": "cd scripts && bash ./package-all.sh",
     "download-binaries": "cd scripts && bash ./download-binaries.sh"
   },
   "repository": {
@@ -34,5 +35,9 @@
   "bugs": {
     "url": "https://github.com/Lyall-A/tidalwave/issues"
   },
-  "homepage": "https://github.com/Lyall-A/tidalwave#readme"
+  "homepage": "https://github.com/Lyall-A/tidalwave#readme",
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "typescript": "^6.0.2"
+  }
 }
