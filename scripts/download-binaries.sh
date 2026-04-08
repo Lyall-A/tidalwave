@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 ffmpeg_linux_x64_download_url=https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz
 ffmpeg_linux_x64_download_extension=.tar.xz
 ffmpeg_linux_x64_download_path=ffmpeg-linux-x64
