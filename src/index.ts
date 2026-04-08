@@ -25,6 +25,7 @@ import {
     tidalTrackQualities,
     tidalVideoQualities
 } from './globals.js';
+import { Album, Artist, Track, Video } from './types';
 
 const args = new Args(process.argv, argOptions);
 const options = {
@@ -75,10 +76,10 @@ if (options.help || [
 (async () => {
     await authorize();
 
-    const tracks: any = [];
-    const albums: any = [];
-    const videos: any = [];
-    const artists: any = [];
+    const tracks: Track[] = [];
+    const albums: Album[] = [];
+    const videos: Video[] = [];
+    const artists: Artist[] = [];
 
     const queue: any = []; // Tracks to be downloaded
 
@@ -475,8 +476,8 @@ if (options.help || [
         }
     }
 
-    async function findTrack(trackId: number, partialData?: { }) {
-        const foundTrack = tracks.find((track: any) => track.id === trackId);
+    async function findTrack(trackId: number, partialData?: Track) {
+        const foundTrack = tracks.find(track => track.id === trackId);
         if (foundTrack) {
             logger.log(`Found already fetched track: ${trackId}`, 'debug');
             return foundTrack;
@@ -485,7 +486,7 @@ if (options.help || [
             return partialData;
         } else {
             logger.log(`Getting information about track: ${Logger.applyColor({ bold: true }, trackId)}`, 'info', true);
-            const track = await getTrack(trackId).catch((err: any) => {
+            const track = await getTrack(trackId).catch(err => {
                 if (partialData && config.partialDataFallback) {
                     logger.log(`Failed to get track ${Logger.applyColor({ bold: true }, trackId)}, some information may be missing!`, 'warn', true, true);
                     return partialData;
@@ -496,8 +497,8 @@ if (options.help || [
         }
     }
 
-    async function findAlbum(albumId: number, partialData?: { }) {
-        const foundAlbum = albums.find((album: any) => album.id === albumId);
+    async function findAlbum(albumId: number, partialData?: Album) {
+        const foundAlbum = albums.find(album => album.id === albumId);
         if (foundAlbum) {
             logger.log(`Found already fetched album: ${albumId}`, 'debug');
             return foundAlbum;
@@ -506,7 +507,7 @@ if (options.help || [
             return partialData;
         } else {
             logger.log(`Getting information about album: ${Logger.applyColor({ bold: true }, albumId)}`, 'info', true);
-            const album = await getAlbum(albumId).catch((err: any) => {
+            const album = await getAlbum(albumId).catch(err => {
                 if (partialData && config.partialDataFallback) {
                     logger.log(`Failed to get album ${Logger.applyColor({ bold: true }, albumId)}, some information may be missing!`, 'warn', true, true);
                     return partialData;
@@ -530,8 +531,8 @@ if (options.help || [
         }
     }
 
-    async function findArtist(artistId: number, partialData?: { }) {
-        const foundArtist = artists.find((artist: any) => artist.id === artistId);
+    async function findArtist(artistId: number, partialData?: Artist) {
+        const foundArtist = artists.find(artist => artist.id === artistId);
         if (foundArtist) {
             logger.log(`Found already fetched artist: ${artistId}`, 'debug');
             return foundArtist;
@@ -540,7 +541,7 @@ if (options.help || [
             return partialData;
         } else {
             logger.log(`Getting information about artist: ${Logger.applyColor({ bold: true }, artistId)}`, 'info', true);
-            const artist = await getArtist(artistId).catch((err: any) => {
+            const artist = await getArtist(artistId).catch(err => {
                 if (partialData && config.partialDataFallback) {
                     logger.log(`Failed to get artist ${Logger.applyColor({ bold: true }, artistId)}, some information may be missing!`, 'warn', true, true);
                     return partialData;

@@ -1,6 +1,8 @@
+import { Mix } from '../types';
+
 import parseTrack from './parseTrack';
 
-export default function parseMix(mix: any, additional: any = { }) {
+export default function parseMix(mix: any, additional: any = { }): Mix {
     return {
         id: mix.id,
         title: mix.title,

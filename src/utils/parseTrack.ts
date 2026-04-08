@@ -1,13 +1,15 @@
+import { Track } from '../types';
+
 import parseArtist from './parseArtist';
 import parseAlbum from './parseAlbum';
 
-export default function parseTrack(track: any) {
+export default function parseTrack(track: any): Track {
     return {
         id: track.id,
         title: track.title,
         fullTitle: `${track.title}${track.version ? ` (${track.version})` : ''}`,
         version: track.version,
-        duration: track.duration,
+        duration: track.duration * 1000,
         upload: track.upload,
         copyright: track.copyright,
         explicit: track.explicit,
@@ -25,6 +27,6 @@ export default function parseTrack(track: any) {
         keyScale: track.keyScale,
         url: track.url,
         artists: track.artists?.map(parseArtist),
-        album: track.album && parseAlbum(track.album) || undefined
+        album: track.album && parseAlbum(track.album) || null
     };
 }
