@@ -1,14 +1,12 @@
-import fs from 'node:fs';
-import path from 'node:path';
+import fs from 'fs';
+import path from 'path';
 
 import parseConfig from './utils/parseConfig.js';
 import Logger from './utils/Logger.js';
 
-// // bun moment
-// export const execDir = path.dirname(__filename);
-// export const execFile = __filename;
-export const execDir = './';
-export const execFile = 'index.ts';
+export declare const isBuild: boolean | undefined;
+
+export const execDir = typeof isBuild !== 'undefined' && isBuild ? path.dirname(process.execPath) : __dirname; // TODO: i dont like this
 
 // Read config
 export const configPath = path.resolve(execDir, 'config.json');

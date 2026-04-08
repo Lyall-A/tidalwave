@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./build.sh macos-x64 bun-darwin-x64
+./package.sh macos-x64 bun-darwin-x64
