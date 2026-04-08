@@ -1,6 +1,6 @@
 import tidalApi from './tidalApi';
 
-export default function getPlaybackInfo(id: number, type = 'track', quality = 'HI_RES_LOSSLESS', immersiveAudio = false, playbackMode = 'STREAM', assetPresentation = 'FULL') {
+export default async function getPlaybackInfo(id: number, type = 'track', quality = 'HI_RES_LOSSLESS', immersiveAudio = false, playbackMode = 'STREAM', assetPresentation = 'FULL') {
     const isVideo = type === 'video' ? true : false;
 
     return tidalApi('privatev1', `/${type === 'video' ? 'videos' : 'tracks'}/${id}/playbackinfo`, {

@@ -5,7 +5,7 @@ import parseArtist from './parseArtist';
 import parsePlaylist from './parsePlaylist';
 import parseVideo from './parseVideo';
 
-export default function search(query: string, limit = 20) {
+export default async function search(query: string, limit = 20) {
     return tidalApi('privatev2', '/search/', {
         query: {
             limit,

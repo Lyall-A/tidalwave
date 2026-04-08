@@ -1,18 +1,17 @@
 import { config, tidalPlaylistImageSizes } from '../globals';
+import { Playlist } from '../types';
 
 import parseTrack from './parseTrack';
 import parseVideo from './parseVideo';
 
-export default function parsePlaylist(playlist: any, additional: any = { }) {
+export default function parsePlaylist(playlist: any, additional: any = { }): Playlist {
     return {
         uuid: playlist.uuid,
         title: playlist.title,
         description: playlist.description,
-        duration: playlist.duration,
+        duration: playlist.duration * 1000,
         images: playlist.squareImage && Object.fromEntries(Object.entries(tidalPlaylistImageSizes).map(([name, size]) => [name, `${config.resourcesBaseUrl}/images/${playlist.squareImage.replace(/-/g, '/')}/${size}.jpg`])) || undefined,
-        // image: playlist.squareImage && `${config.resourcesBaseUrl}/images/${playlist.squareImage.replace(/-/g, '/')}/origin.jpg` || undefined,
         customImage: playlist.customImageUrl, // not used even with custom images?
-        // trackCount: playlist.numberOfTracks,
         sharing: playlist.sharingLevel,
         created: playlist.created,
         lastUpdated: playlist.lastUpdated,

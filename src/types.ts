@@ -45,8 +45,8 @@ export type Album = {
     quality: string; // TODO: enum
     modes: string[]; // TODO: enum
     qualityTypes: string[]; // TODO: enum
-    credits: any | null; // TODO: type returned by parseCredits
-    trackCredits: { track: Track; credits: string; }[] | null;
+    credits: Credit[] | null;
+    trackCredits: { track: Track; credits: Credit[]; }[] | null;
     review: {
         originalText: string;
         text: string;
@@ -85,6 +85,22 @@ export type Video = {
     artists: Artist[];
 };
 
+export type Playlist = {
+    uuid: string;
+    title: string;
+    description: string;
+    duration: number;
+    images: any | null; // TODO
+    customImage: string;
+    sharing: SharingLevel;
+    created: string;
+    lastUpdated: string;
+    items: {
+        type: 'track' | 'video';
+        item: Track | Video;
+    }[];
+}
+
 export type Mix = {
     id: string;
     title: string;
@@ -94,4 +110,18 @@ export type Mix = {
     images: any; // TODO
     detailImages: any; // TODO
     tracks: Track[];
+};
+
+export type Credit = {
+    type: string;
+    tagName: string;
+    contributors: {
+        name: string;
+        id: number;
+    }[];
+};
+
+export enum SharingLevel {
+    PUBLIC = 'PUBLIC',
+    PRIVATE = 'PRIVATE'
 };

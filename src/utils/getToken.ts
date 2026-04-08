@@ -1,6 +1,6 @@
 import { config } from '../globals';
 
-export default function getToken(grantType: string, params: {
+export default async function getToken(grantType: string, params: {
     clientId?: string;
     clientSecret?: string;
     code?: string;

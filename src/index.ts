@@ -410,15 +410,17 @@ if (options.help || [
                 
                 // We don't need to fetch the track/video here, everything needed seems to be included already
                 if (itemType === 'track') {
+                    const track = item as Track;
+
                     const artists = [];
                     const albumArtists = [];
     
-                    const album = await findAlbum(item.album.id, item.album);
-                    for (const artist of item.artists || []) artists.push(await findArtist(artist.id, artist));
+                    const album = await findAlbum(track.album.id, track.album);
+                    for (const artist of track.artists || []) artists.push(await findArtist(artist.id, artist));
                     for (const artist of album.artists || []) albumArtists.push(await findArtist(artist.id, artist));
     
                     queue.push({
-                        track: item,
+                        track,
                         album,
                         artists,
                         albumArtists,
@@ -426,12 +428,14 @@ if (options.help || [
                         itemIndex
                     });
                 } else if (itemType === 'video') {
+                    const video = item as Video;
+
                     const artists = [];
 
-                    for (const artist of item.artists) artists.push(await findArtist(artist.id, artist));
+                    for (const artist of video.artists) artists.push(await findArtist(artist.id, artist));
 
                     queue.push({
-                        video: item,
+                        video,
                         artists,
                         playlist,
                         itemIndex

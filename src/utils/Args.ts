@@ -1,5 +1,5 @@
 
-type optionsSchema = {
+type Options = {
     name: string;
     aliases?: string[];
     shortName?: string;
@@ -13,10 +13,10 @@ export default class Args {
     args: {
         name: string;
         value: any;
-        options: optionsSchema;
+        options: Options;
     }[] = [];
 
-    constructor(argv: string[] = process.argv, argOptions: optionsSchema[] = []) {
+    constructor(argv: string[] = process.argv, argOptions: Options[] = []) {
         argv.forEach((arg, argIndex) => {
             const shortArg = arg.match(/^-([^-][^\s]*)$/)?.[1];
             const longArg = arg.match(/^--([^-][^\s]*)$/)?.[1];

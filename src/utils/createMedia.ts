@@ -2,7 +2,7 @@ import spawn from './spawn';
 
 import { config } from '../globals';
 
-export default function createMedia(inputPath: string, outputPath: string, metadata: [string, string][], coverPath?: string, streams = 1) {
+export default async function createMedia(inputPath: string, outputPath: string, metadata: [string, string][], coverPath?: string, streams = 1) {
     return spawn(config.ffmpegPath, [
         '-i', inputPath,
         ...(coverPath ? [

@@ -7,6 +7,6 @@ export default function formatPath(unformattedPath: string, obj: { }) {
     return `${root}${path.normalize(unformattedPath)
         .replace(root, '')
         .split(path.sep)
-        .map((i: any) => formatString(i, obj).replace(/\/|\\|\?|\*|\:|\||\"|\<|\>/g, ''))
+        .map(i => formatString(i, obj).replace(/\/|\\|\?|\*|\:|\||\"|\<|\>/g, ''))
         .join(path.sep)}`;
 };

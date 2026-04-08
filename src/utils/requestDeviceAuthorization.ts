@@ -1,6 +1,6 @@
 import { config } from '../globals';
 
-export default function requestDeviceAuthorization(clientId: string, scope: string[]) {
+export default async function requestDeviceAuthorization(clientId: string, scope: string[]) {
     return fetch(`${config.authApiBaseUrl}/oauth2/device_authorization`, {
         method: 'POST',
         body: new URLSearchParams({

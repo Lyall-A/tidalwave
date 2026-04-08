@@ -4,6 +4,7 @@
         "outDir": "./dist",
         "module": "nodenext",
         "target": "esnext",
-        "types": ["node"],
+        "types": ["node"]
+        // TODO: add more to make it gooder
     }
 }

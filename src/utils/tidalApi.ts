@@ -1,12 +1,16 @@
 import { config, secrets, logger } from '../globals';
 
-export default function tidalApi(api: string = 'openv2', path: string, options: {
+export default async function tidalApi(api: 'openv2' | 'privatev1' | 'privatev2' = 'openv2', path: string, options: {
     query?: object;
     method?: string;
     headers?: object;
     json?: any;
 } = { }) {
-    const baseUrl = api === 'openv2' ? config.openApiV2BaseUrl : api === 'privatev1' ? config.privateApiV1BaseUrl : api === 'privatev2' ? config.privateApiV2BaseUrl : null;
+    const baseUrl =
+        api === 'openv2' ? config.openApiV2BaseUrl :
+        api === 'privatev1' ? config.privateApiV1BaseUrl :
+        api === 'privatev2' ? config.privateApiV2BaseUrl :
+        null;
     const params = {
         ...(options.query || {}),
         locale: 'en_US',

@@ -2,20 +2,20 @@ import fs from 'fs';
 
 import defaultConfig from '../default.config.json';
 
-export type typeOptions = {
+export type TypeOptions = {
     directory: string;
     filename: string;
     coverFilename: string | null;
 }
 
-export type configSchema = {
+export type Config = {
     _version: number;
-    defaultTypeOptions: typeOptions;
+    defaultTypeOptions: TypeOptions;
     typeOptions: {
-        album?: typeOptions;
-        video?: typeOptions;
-        playlist?: typeOptions;
-        mix?: typeOptions;
+        album?: TypeOptions;
+        video?: TypeOptions;
+        playlist?: TypeOptions;
+        mix?: TypeOptions;
     };
     trackQuality: string;
     videoQuality: string;
@@ -62,7 +62,7 @@ export type configSchema = {
     resourcesBaseUrl: string;
 };
 
-export default function parseConfig(configPath: string): configSchema {
+export default function parseConfig(configPath: string): Config {
     const jsonConfig = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
     let version = jsonConfig._version;
     let shouldUpdate = false;

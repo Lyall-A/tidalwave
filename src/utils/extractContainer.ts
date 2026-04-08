@@ -2,7 +2,7 @@ import spawn from './spawn';
 
 import { config } from '../globals';
 
-export default function extractAudioStream(inputPath: string, outputPath: string) {
+export default async function extractAudioStream(inputPath: string, outputPath: string) {
     return spawn(config.ffmpegPath, [
         '-i', inputPath,
         '-map_metadata', '-1',
