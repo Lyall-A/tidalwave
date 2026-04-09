@@ -5,7 +5,22 @@ import parseArtist from './parseArtist';
 import parsePlaylist from './parsePlaylist';
 import parseVideo from './parseVideo';
 
-export default async function search(query: string, limit = 20) {
+import { Album, Artist, Playlist, Track, Video } from '../types';
+
+export default async function search(query: string, limit = 20): Promise<{
+    topResults: (
+        { type: 'track', value: Track } |
+        { type: 'album', value: Album } |
+        { type: 'video', value: Video } |
+        { type: 'artist', value: Artist } |
+        { type: 'playlist', value: Playlist }
+    )[];
+    tracks: Track[];
+    albums: Album[];
+    videos: Video[];
+    artists: Artist[];
+    playlists: Playlist[];
+}> {
     return tidalApi('privatev2', '/search/', {
         query: {
             limit,

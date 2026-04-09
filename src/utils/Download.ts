@@ -53,7 +53,7 @@ export default class Download {
     lyrics;
     metadata;
 
-    fileStream: any;
+    fileStream?: fs.WriteStream;
 
     constructor(options: any = { }) {
         this.details = options.details;
@@ -109,7 +109,7 @@ export default class Download {
         if (!this.keepOriginalFile) fs.unlinkSync(this.getOriginalPath()); // Delete container file
         if (!this.keepCoverFile && fs.existsSync(this.getCoverPath())) fs.unlinkSync(this.getCoverPath()); // Delete cover file
 
-        this.log(`Completed in ${Math.floor((Date.now() - startDate) / 1000)}s ${Logger.applyColor({ bold: true }, `[${[this.playbackInfo.bitDepth && this.playbackInfo.sampleRate && `${this.playbackInfo.bitDepth}-bit/${this.playbackInfo.sampleRate / 1000} kHz`, `${(this.fileStream.bytesWritten / 1024 / 1024).toFixed(2)} MB`].filter(i => i).join(', ')}]`)}`);
+        this.log(`Completed in ${Math.floor((Date.now() - startDate) / 1000)}s ${Logger.applyColor({ bold: true }, `[${[this.playbackInfo.bitDepth && this.playbackInfo.sampleRate && `${this.playbackInfo.bitDepth}-bit/${this.playbackInfo.sampleRate / 1000} kHz`, `${(this.fileStream!.bytesWritten / 1024 / 1024).toFixed(2)} MB`].filter(i => i).join(', ')}]`)}`);
     }
 
     async createPlaylist() {
@@ -274,7 +274,7 @@ export default class Download {
 
             if (!this.fileStream.write(segmentData)) {
                 // buffer full, wait for drain
-                await new Promise(resolve => this.fileStream.once('drain', resolve));
+                await new Promise(resolve => this.fileStream!.once('drain', resolve));
             }
 
             const delay = Math.floor(Math.random() * (this.segmentWaitMax - this.segmentWaitMin + 1) + this.segmentWaitMin);

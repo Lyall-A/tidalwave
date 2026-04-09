@@ -25,7 +25,7 @@ import {
     tidalTrackQualities,
     tidalVideoQualities
 } from './globals.js';
-import { Album, Artist, Track, Video } from './types';
+import { Album, Artist, Mix, Playlist, Track, Video } from './types';
 
 const args = new Args(process.argv, argOptions);
 const options = {
@@ -81,7 +81,17 @@ if (options.help || [
     const videos: Video[] = [];
     const artists: Artist[] = [];
 
-    const queue: any = []; // Tracks to be downloaded
+    // Tracks to be downloaded
+    const queue: {
+        track?: Track;
+        album?: Album;
+        video?: Video;
+        artists?: Artist[];
+        albumArtists?: Artist[];
+        playlist?: Playlist;
+        mix?: Mix;
+        itemIndex?: number;
+    }[] = [];
 
     for (const trackId of options.tracks) await addTrack(trackId); // Tracks
     for (const albumId of options.albums) await addAlbum(albumId); // Albums
@@ -93,20 +103,20 @@ if (options.help || [
     // Searches
     for (const { type, query } of options.searches) {
         logger.log(`Searching for: ${Logger.applyColor({ bold: true }, query)}`, 'info', true);
-        const result = await search(query, 1).then((results: any) => (
-            type === 'track' ? results.tracks.map((value: any) => ({ type, value })) :
-            type === 'album' ? results.albums.map((value: any) => ({ type, value })) :
-            type === 'video' ? results.videos.map((value: any) => ({ type, value })) :
-            type === 'artist' ? results.artists.map((value: any) => ({ type, value })) :
-            type === 'playlist' ? results.playlists.map((value: any) => ({ type, value })) :
+        const result = await search(query, 1).then(results => (
+            type === 'track' ? results.tracks.map(value => ({ type, value })) :
+            type === 'album' ? results.albums.map(value => ({ type, value })) :
+            type === 'video' ? results.videos.map(value => ({ type, value })) :
+            type === 'artist' ? results.artists.map(value => ({ type, value })) :
+            type === 'playlist' ? results.playlists.map(value => ({ type, value })) :
             results.topResults
         )[0]);
 
-        if (result?.type === 'track') await addTrack(result.value.id); else
-        if (result?.type === 'album') await addAlbum(result.value.id); else
-        if (result?.type === 'video') await addVideo(result.value.id); else
-        if (result?.type === 'artist') await addArtist(result.value.id); else
-        if (result?.type === 'playlist') await addPlaylist(result.value.id); else
+        if (result?.type === 'track') await addTrack((result.value as Track).id); else
+        if (result?.type === 'album') await addAlbum((result.value as Album).id); else
+        if (result?.type === 'video') await addVideo((result.value as Video).id); else
+        if (result?.type === 'artist') await addArtist((result.value as Artist).id); else
+        if (result?.type === 'playlist') await addPlaylist((result.value as Playlist).uuid); else
         logger.log(`No search results for "${Logger.applyColor({ bold: true }, query)}"`, 'error', true, true);
     }
 
@@ -158,7 +168,7 @@ if (options.help || [
             albumArtist: item.albumArtists?.[0],
             trackNumberPadded: item.track?.trackNumber?.toString().padStart(2, '0'), // TODO: maybe remove this and add a padding function in formatString?
             queueNum: itemIndex + 1,
-            itemNum: item.itemIndex + 1,
+            itemNum: item.itemIndex && item.itemIndex + 1,
             playlistCover: item.playlist ? item.playlist.images[config.playlistCoverSize?.toUpperCase()] || item.playlist.images['ORIGINAL'] : null,
             mixCover: item.mix ? item.mix.images[config.mixCoverSize?.toUpperCase()] || item.mix.images['LARGE'] : null,
             mixDetailCover: item.mix ? item.mix.detailImages[config.mixCoverSize?.toUpperCase()] || item.mix.images['LARGE'] : null, // not currently used

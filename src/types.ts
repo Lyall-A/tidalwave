@@ -96,10 +96,10 @@ export type Playlist = {
     sharing: SharingLevel;
     created: string;
     lastUpdated: string;
-    items: {
-        type: 'track' | 'video';
-        item: Track | Video;
-    }[];
+    items: (
+        { type: 'track', item: Track } |
+        { type: 'video', item: Video }
+    )[];
 }
 
 export type Mix = {
