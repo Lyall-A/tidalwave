@@ -13,7 +13,7 @@ export default function parseVideo(video: any): Video {
         releaseDate: video.releaseDate,
         explicit: video.explicit,
         quality: video.quality,
-        images: video.imageId && Object.fromEntries(Object.entries(tidalVideoCoverSizes).map(([name, size]) => [name, `${config.resourcesBaseUrl}/images/${video.imageId.replace(/-/g, '/')}/${size}.jpg`])) || null,
+        images: video.imageId && Object.fromEntries(Object.entries(tidalVideoCoverSizes).map(([name, size]) => [name, `${config.resourcesBaseUrl}/images/${video.imageId.replace(/-/g, '/')}/${size}.jpg`])) || undefined,
         trackNumber: video.trackNumber,
         volumeNumber: video.volumeNumber,
         artists: video.artists?.map(parseArtist),

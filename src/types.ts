@@ -1,10 +1,11 @@
 // TODO: find optional stuff in all types
+// TODO: move fake enums in global.ts to here
 
 export type Track = {
     id: number;
     title: string;
     fullTitle: string;
-    version: string | null;
+    version?: string;
     duration: number;
     upload: boolean;
     copyright: string;
@@ -29,7 +30,7 @@ export type Track = {
 export type Album = {
     id: number;
     title: string;
-    version: string | null;
+    version?: string;
     description: string;
     type: string; // TODO: enum
     duration: number;
@@ -40,18 +41,18 @@ export type Album = {
     copyright: string;
     explicit: boolean;
     upc: string;
-    covers: any | null; // TODO: type
-    videoCovers: any | null; // TODO: type
+    covers?: any; // TODO: type
+    videoCovers?: any; // TODO: type
     quality: string; // TODO: enum
     modes: string[]; // TODO: enum
     qualityTypes: string[]; // TODO: enum
-    credits: Credit[] | null;
-    trackCredits: { track: Track; credits: Credit[]; }[] | null;
-    review: {
+    credits?: Credit[];
+    trackCredits?: { track: Track; credits: Credit[]; }[];
+    review?: {
         originalText: string;
         text: string;
         source: string;
-    } | null;
+    };
     url: string;
     artists: Artist[];
     tracks: Track[];
@@ -60,12 +61,12 @@ export type Album = {
 export type Artist = {
     id: number;
     name: number;
-    biography: {
+    biography?: {
         originalText: string;
         text: string;
         source: string;
-    } | null;
-    pictures: any | null; // TODO: type
+    };
+    pictures?: any; // TODO: type
     types: string[]; // TODO: enum
     roles: { id: number; category: string; }[]; // TODO: enum on category
     albums: Album[];
@@ -79,7 +80,7 @@ export type Video = {
     releaseDate: string;
     explicit: boolean;
     quality: string; // TODO: enum
-    images: any | null;
+    images?: any;
     trackNumber: number;
     volumeNumber: number;
     artists: Artist[];
@@ -90,7 +91,7 @@ export type Playlist = {
     title: string;
     description: string;
     duration: number;
-    images: any | null; // TODO
+    images?: any; // TODO
     customImage: string;
     sharing: SharingLevel;
     created: string;

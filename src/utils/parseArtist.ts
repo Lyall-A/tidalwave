@@ -13,8 +13,8 @@ export default function parseArtist(artist: any, additional: any = { }): Artist 
             originalText: additional.biography.text,
             text: stripMarkup(additional.biography.text),
             source: additional.biography.source
-        } : null,
-        pictures: artist.picture && Object.fromEntries(Object.entries(tidalArtistPictureSizes).map(([name, size]) => [name, `${config.resourcesBaseUrl}/images/${artist.picture.replace(/-/g, '/')}/${size}.jpg`])) || null,
+        } : undefined,
+        pictures: artist.picture && Object.fromEntries(Object.entries(tidalArtistPictureSizes).map(([name, size]) => [name, `${config.resourcesBaseUrl}/images/${artist.picture.replace(/-/g, '/')}/${size}.jpg`])) || undefined,
         types: artist.artistTypes,
         roles: artist.artistRoles?.map((role: any) => ({
             id: role.categoryId,

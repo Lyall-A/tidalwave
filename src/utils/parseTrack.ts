@@ -27,6 +27,6 @@ export default function parseTrack(track: any): Track {
         keyScale: track.keyScale,
         url: track.url,
         artists: track.artists?.map(parseArtist),
-        album: track.album && parseAlbum(track.album) || null
+        album: track.album && parseAlbum(track.album) || undefined
     };
 }
