@@ -48,7 +48,7 @@ const options = {
     ],
     urls: args.getAll('url'),
     updates: args.getAll('update'),
-    
+
     trackQuality: (args.get('track-quality') ?? config.trackQuality)?.toUpperCase(),
     videoQuality: (args.get('video-quality') ?? config.videoQuality)?.toUpperCase(),
     dolbyAtmos: args.get('dolby-atmos') ?? config.useDolbyAtmos,
@@ -127,7 +127,7 @@ if (options.help || [
             const type = match[1].toLowerCase();
             const id = match[2];
             const idInt = parseInt(id, 10);
-            
+
             if (type === 'track') await addTrack(idInt); else
             if (type === 'album') await addAlbum(idInt); else
             if (type === 'video') await addVideo(idInt); else
@@ -163,7 +163,7 @@ if (options.help || [
             playlist: item.playlist,
             mix: item.mix,
             itemIndex: item.itemIndex, // used for playlists and mixes
-            
+
             artist: item.artists?.[0],
             albumArtist: item.albumArtists?.[0],
             trackNumberPadded: item.track?.trackNumber?.toString().padStart(2, '0'), // TODO: maybe remove this and add a padding function in formatString?
@@ -184,7 +184,7 @@ if (options.help || [
                 null,
             id:
                 item.track ? item.track.id :
-                item.video ? item.video.id : 
+                item.video ? item.video.id :
                 null,
             title:
                 item.track ? item.track.fullTitle :
@@ -338,7 +338,7 @@ if (options.help || [
             if (album.upload && !config.allowUserUploads) throw new Error('User uploads are disabled');
 
             for (const track of album.tracks) tracks.push(await findTrack(track.id, track));
-            
+
             for (const track of tracks) {
                 const artists = [];
                 const albumArtists = [];
@@ -417,18 +417,18 @@ if (options.help || [
 
             for (let itemIndex = 0; itemIndex < playlist.items.length; itemIndex++) {
                 const { type: itemType, item } = playlist.items[itemIndex];
-                
+
                 // We don't need to fetch the track/video here, everything needed seems to be included already
                 if (itemType === 'track') {
                     const track = item as Track;
 
                     const artists = [];
                     const albumArtists = [];
-    
+
                     const album = await findAlbum(track.album.id, track.album);
                     for (const artist of track.artists || []) artists.push(await findArtist(artist.id, artist));
                     for (const artist of album.artists || []) albumArtists.push(await findArtist(artist.id, artist));
-    
+
                     queue.push({
                         track,
                         album,
@@ -531,7 +531,7 @@ if (options.help || [
             return album;
         }
     }
-    
+
     async function findVideo(videoId: number): Promise<any> {
         const foundVideo = videos.find((video: any) => video.id === videoId);
         if (foundVideo) {
@@ -662,7 +662,7 @@ Usage:
 Options:
   ${argOptions.filter(arg => !arg.hidden).map(arg => `${
     `${[
-        arg.name ? `--${arg.name}` : null, 
+        arg.name ? `--${arg.name}` : null,
         arg.shortName ? `-${arg.shortName}` : null,
         ...(arg.aliases ? arg.aliases.map(alias => [`--${alias}`]) : []),
         ...(arg.shortAliases ? arg.shortAliases.map(alias => [`-${alias}`]) : []),

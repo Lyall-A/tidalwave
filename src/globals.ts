@@ -37,7 +37,7 @@ export const argOptions = [
     { name: 'search:playlist', shortName: 's:p', description: 'Download top search for a playlist', valueDescription: 'query' },
     { name: 'url', shortName: 'u', description: 'Download from a TIDAL URL', valueDescription: 'url' },
     { name: 'update', description: 'Update an existing file with metadata from TIDAL', valueDescription: 'path' },
-    
+
     { name: 'track-quality', shortName: 'tq', aliases: ['quality'], shortAliases: ['q'], description: 'Track download quality', valueDescription: 'low|high|max', default: config.trackQuality },
     { name: 'video-quality', shortName: 'vq', description: 'Video download quality', valueDescription: 'low|high|max|<height>', default: config.videoQuality },
     { name: 'dolby-atmos', shortName: 'da', type: 'bool', description: 'Downloads in immersive audio when available. Requires a token from a mobile device', valueDescription: 'yes|no', default: config.useDolbyAtmos, hidden: true },
@@ -139,7 +139,7 @@ export const tidalCredits = [
     { type: 'Design', tagName: null },
     { type: 'Vocals', tagName: null },
     { type: 'Graphic Design', tagName: null },
-    
+
     // Unknown
     { type: 'Additional Mixing Engineer' },
     { type: 'Keyboard' },

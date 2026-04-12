@@ -70,7 +70,7 @@ export default class Logger {
             { name: 'DEBUG', id: 'debug', fgColor: 90 },
         ];
     }
-    
+
     static applyColor(options: {
         fg?: string | number;
         bg?: string | number;
@@ -113,7 +113,7 @@ export default class Logger {
             const lastLogLines = this.lastLog.split('\n');
             const [windowWidth, windowHeight] = process.stdout.getWindowSize();
             const lastLogLineCount = lastLogLines.length + lastLogLines.reduce((sum, line) => sum + Math.floor((Logger.getDisplayedLength(line) - 1) / windowWidth), 0); // calculate line count, including \n's and text wrapping
-            
+
             for (let lineIndex = 0; lineIndex < lastLogLineCount; lineIndex++) {
                 process.stdout.moveCursor(0, -1);
                 process.stdout.clearLine(-1);

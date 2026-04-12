@@ -93,7 +93,7 @@ export default function parseConfig(configPath: string): Config {
             config.trackQuality = config.quality;
             delete config.quality;
         }
-        
+
         version = 1;
     }
 

@@ -94,7 +94,7 @@ export default class Download {
         this.lyrics = options.lyrics;
         this.metadata = options.metadata;
     }
-    
+
     async download() {
         const startDate = Date.now();
         this.logger.lastLog = '';
@@ -138,7 +138,7 @@ export default class Download {
         this.log('Getting segment URL\'s...');
         this.playbackInfo = await getPlaybackInfo(this.details.id, this.details.type, this.details.isVideo ? 'HIGH' : this.trackQuality, (this.details.isTrack && this.details.track.qualityTypes.includes('DOLBY_ATMOS') && this.useDolbyAtmos) ? true : false);
         this.manifest = await parseManifest(Buffer.from(this.playbackInfo.manifest, 'base64').toString(), this.playbackInfo.manifestMimeType);
-        
+
         // please dont
         // this.trackManifest = await getTrackManifest(this.details.id);
         // if (this.trackManifest.attributes.drmData) this.log(`Encrypted with ${this.trackManifest.attributes.drmData.drmSystem}, good luck!`, 'warn');
@@ -146,7 +146,7 @@ export default class Download {
         // this.manifest = await parseManifest(Buffer.from(manifestBase64, 'base64').toString(), manifestType);
 
         if (this.playbackInfo.assetPresentation === 'PREVIEW') this.log('Downloading preview, make sure you have a valid subscription!', 'warn');
-        
+
         if (this.details.isTrack) {
             this.segmentUrls = this.manifest.segments;
             this.originalExtension = '.mp4';
@@ -172,7 +172,7 @@ export default class Download {
 
             // this.segmentUrls = segmentManifests[segmentManifests.length - 1].segments;
             this.segmentUrls = segmentManifest.segments;
-            
+
             this.originalExtension = '.ts';
             this.mediaExtension = '.mp4';
         }
@@ -252,7 +252,7 @@ export default class Download {
             ...creditMetadata,
             ...customMetadata
         ].filter(([tag, value]) => value !== undefined && value !== null);
-        
+
         // most overkill debug log ever
         this.logger.log(`Metadata:\n${this.metadata.map(([tag, value]: any) => {
             const padding = ' '.repeat(Logger.getDisplayedLength(this.logger.getLevel('debug')?.prefix || ''));
@@ -260,16 +260,16 @@ export default class Download {
             return `${padding}${valuePrefix}${value.toString().replace(/\n/g, `\n${padding}${' '.repeat(Logger.getDisplayedLength(valuePrefix))}`)}`;
         }).join('\n')}`, 'debug');
     }
-        
+
     async downloadSegments() {
         this.fileStream = fs.createWriteStream(this.getOriginalPath());
 
         for (let segmentIndex = 0; segmentIndex < this.segmentUrls.length; segmentIndex++) {
             const segmentUrl = this.segmentUrls[segmentIndex]
                 .replace(/&amp;/g, '&'); // fix error when tidal uses key-pair-id parameter instead of token
-                
+
             this.log(`Downloading segment ${segmentIndex + 1} of ${this.segmentUrls.length}...`);
-            
+
             const segmentData = await fetch(segmentUrl).then(async res => Buffer.from(await res.arrayBuffer()));
 
             if (!this.fileStream.write(segmentData)) {
@@ -295,7 +295,7 @@ export default class Download {
             this.log(`Converting to ${this.mediaExtension}...`);
             await extractContainer(this.getOriginalPath(), this.getMediaPath());
         }
-        
+
         if (this.embedMetadata) {
             // Embed metadata
             if (this.metadataEmbedder === 'kid3') {

@@ -5,7 +5,7 @@
         "module": "nodenext",
         "target": "esnext",
         "types": ["node"],
-		
+
 		"noImplicitAny": true,
 		"strict": true,
         // TODO: make gooder

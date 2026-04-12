@@ -33,7 +33,7 @@ export default async function parseManifest(manifest: string, manifestType: stri
         const manifestJson = JSON.parse(manifest);
 
         const mainManifests = [];
-        
+
         for (const url of manifestJson.urls) {
             const mainManifest = await fetch(url).then(i => i.text());
 
@@ -66,7 +66,7 @@ export default async function parseManifest(manifest: string, manifestType: stri
         };
     } else if (manifestType === 'application/vnd.tidal.bts') {
         const manifestJson = JSON.parse(manifest);
-        
+
         return {
             mimeType: manifestJson.mimeType,
             codec: manifestJson.codecs,

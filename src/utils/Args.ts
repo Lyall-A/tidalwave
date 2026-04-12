@@ -40,7 +40,7 @@ export default class Args {
                 options.type === 'float' ? parseFloat(value) :
                 options.type === 'bool' ? ['yes', 'true', '1'].includes(value.toLowerCase()) :
                 value;
-            
+
             this.args.push({
                 name: options.name,
                 value: parsedValue,
